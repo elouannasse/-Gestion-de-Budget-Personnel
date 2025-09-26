@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test des Routes</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .route-test {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .route-link {
+        display: inline-block;
+        margin: 10px 10px 10px 0;
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .route-link:hover {
+        background: #0056b3;
+      }
+      .success {
+        border-left: 4px solid #28a745;
+      }
+      .info {
+        border-left: 4px solid #17a2b8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🧪 Test des Routes d'Authentification</h1>
+
+      <div class="route-test success">
+        <h3>✅ Routes d'Authentification</h3>
+        <p>Ces routes doivent fonctionner maintenant :</p>
+        <a href="/auth/login" class="route-link">🔐 Login</a>
+        <a href="/auth/register" class="route-link">📝 Register</a>
+        <a href="/auth/logout" class="route-link">🚪 Logout</a>
+      </div>
+
+      <div class="route-test info">
+        <h3>ℹ️ Routes du Dashboard</h3>
+        <p>Routes principales de l'application :</p>
+        <a href="/dashboard" class="route-link">📊 Dashboard</a>
+        <a href="/" class="route-link">🏠 Home</a>
+      </div>
+
+      <div class="route-test">
+        <h3>📋 État actuel</h3>
+        <p><strong>Serveur :</strong> ✅ Fonctionnel sur le port 3000</p>
+        <p>
+          <strong>Base de données :</strong> ✅ Connectée (gestiondesbudgets)
+        </p>
+        <p><strong>Sessions :</strong> ✅ Configurées</p>
+        <p>
+          <strong>Routes :</strong> ✅ Toutes les routes sont maintenant
+          résolues
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

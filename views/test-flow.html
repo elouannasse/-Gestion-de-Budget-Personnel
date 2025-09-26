@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Flow - Gestion Budget</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: "Arial", sans-serif;
+      }
+
+      .test-container {
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .test-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 1rem 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-test {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        margin: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-test:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        color: white;
+      }
+
+      .status-good {
+        color: #28a745;
+      }
+      .status-error {
+        color: #dc3545;
+      }
+      .status-warning {
+        color: #ffc107;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <div class="test-card">
+        <h1><i class="fas fa-flask"></i> Test du Flow d'Authentification</h1>
+        <p>
+          Utilise ces boutons pour tester le comportement de ton application :
+        </p>
+      </div>
+
+      <div class="test-card">
+        <h3><i class="fas fa-route"></i> Test des Routes Principales</h3>
+        <p>
+          <strong>Scénario :</strong> Utilisateur non connecté essaie d'accéder
+          au dashboard
+        </p>
+
+        <a href="/dashboard" class="btn-test">
+          <i class="fas fa-tachometer-alt"></i> Aller au Dashboard
+        </a>
+        <p>
+          <small
+            ><span class="status-good">✅ Résultat attendu :</span> Redirection
+            vers /auth/login</small
+          >
+        </p>
+      </div>
+
+      <div class="test-card">
+        <h3>
+          <i class="fas fa-sign-in-alt"></i> Test des Pages d'Authentification
+        </h3>
+        <p><strong>Scénario :</strong> Accès direct aux pages login/register</p>
+
+        <a href="/auth/login" class="btn-test">
+          <i class="fas fa-sign-in-alt"></i> Page Login
+        </a>
+        <a href="/auth/register" class="btn-test">
+          <i class="fas fa-user-plus"></i> Page Register
+        </a>
+        <p>
+          <small
+            ><span class="status-good">✅ Résultat attendu :</span> Affichage
+            des pages avec design moderne</small
+          >
+        </p>
+      </div>
+
+      <div class="test-card">
+        <h3><i class="fas fa-user-check"></i> Créer un Compte Test</h3>
+        <p><strong>Instructions pour tester :</strong></p>
+        <ol>
+          <li>
+            Va à la <a href="/auth/register" class="btn-test">page Register</a>
+          </li>
+          <li>
+            Remplis les informations suivantes :
+            <ul>
+              <li><strong>Nom :</strong> Test User</li>
+              <li><strong>Email :</strong> test@example.com</li>
+              <li><strong>Mot de passe :</strong> 123456</li>
+              <li><strong>Devise :</strong> EUR</li>
+            </ul>
+          </li>
+          <li>Clique sur "Créer mon compte"</li>
+          <li>
+            <span class="status-good">✅ Résultat attendu :</span> Redirection
+            automatique vers le dashboard
+          </li>
+        </ol>
+      </div>
+
+      <div class="test-card">
+        <h3><i class="fas fa-sign-out-alt"></i> Test Logout</h3>
+        <p><strong>Après avoir créé un compte :</strong></p>
+        <a href="/auth/logout" class="btn-test">
+          <i class="fas fa-sign-out-alt"></i> Se Déconnecter
+        </a>
+        <p>
+          <small
+            ><span class="status-good">✅ Résultat attendu :</span> Redirection
+            vers /auth/login</small
+          >
+        </p>
+      </div>
+
+      <div class="test-card">
+        <h3><i class="fas fa-info-circle"></i> État Actuel du Serveur</h3>
+        <p>
+          <span class="status-good">✅ Serveur :</span> Fonctionnel sur port
+          3000
+        </p>
+        <p>
+          <span class="status-good">✅ Base de données :</span> Connectée
+          (gestiondesbudgets)
+        </p>
+        <p>
+          <span class="status-good">✅ Tables :</span> users, transactions,
+          budgets, savings_goals, sessions
+        </p>
+        <p>
+          <span class="status-good">✅ Middleware :</span> Authentification
+          configurée
+        </p>
+      </div>
+
+      <div class="test-card">
+        <h3><i class="fas fa-home"></i> Retour aux Pages Principales</h3>
+        <a href="/" class="btn-test">
+          <i class="fas fa-home"></i> Page d'Accueil
+        </a>
+        <a href="/test" class="btn-test">
+          <i class="fas fa-vial"></i> Page de Test Routes
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> - Connexion</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .login-container {
+        width: 100%;
+        max-width: 450px;
+      }
+
+      .login-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        animation: slideUp 0.6s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .login-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2.5rem 2rem 2rem;
+        text-align: center;
+        color: white;
+        position: relative;
+      }
+
+      .login-header::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+      }
+
+      .login-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .login-header h1 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .login-header p {
+        font-size: 1rem;
+        opacity: 0.9;
+        font-weight: 300;
+      }
+
+      .login-body {
+        padding: 2.5rem 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+
+      .form-control {
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #f9fafb;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background-color: white;
+        outline: none;
+      }
+
+      .form-control:hover {
+        border-color: #d1d5db;
+      }
+
+      .input-icon {
+        position: relative;
+      }
+
+      .input-icon i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 1.1rem;
+      }
+
+      .input-icon .form-control {
+        padding-left: 48px;
+      }
+
+      .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 24px;
+        font-weight: 600;
+        font-size: 1rem;
+        color: white;
+        width: 100%;
+        transition: all 0.3s ease;
+        text-transform: none;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+      }
+
+      .btn-login:active {
+        transform: translateY(0);
+      }
+
+      .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1.5rem 0;
+      }
+
+      .form-check {
+        display: flex;
+        align-items: center;
+      }
+
+      .form-check-input {
+        margin-right: 0.5rem;
+        border-radius: 4px;
+      }
+
+      .form-check-label {
+        font-size: 0.9rem;
+        color: #6b7280;
+        font-weight: 400;
+      }
+
+      .forgot-link {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .forgot-link:hover {
+        color: #5a67d8;
+        text-decoration: underline;
+      }
+
+      .divider {
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+      }
+
+      .divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e5e7eb;
+      }
+
+      .divider span {
+        background: white;
+        padding: 0 1rem;
+        color: #9ca3af;
+        font-size: 0.9rem;
+      }
+
+      .register-link {
+        text-align: center;
+        margin-top: 1rem;
+      }
+
+      .register-link p {
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+
+      .register-link a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .register-link a:hover {
+        color: #5a67d8;
+        text-decoration: underline;
+      }
+
+      .alert {
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+      }
+
+      .alert-danger {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #dc2626;
+        border-left: 4px solid #ef4444;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 576px) {
+        body {
+          padding: 10px;
+        }
+
+        .login-header {
+          padding: 2rem 1.5rem 1.5rem;
+        }
+
+        .login-body {
+          padding: 2rem 1.5rem;
+        }
+
+        .login-header h1 {
+          font-size: 1.6rem;
+        }
+
+        .remember-forgot {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+      }
+
+      /* Loading state for button */
+      .btn-login:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-card">
+        <!-- Header -->
+        <div class="login-header">
+          <div class="login-icon">
+            <i class="fas fa-user-circle fa-2x"></i>
+          </div>
+          <h1>Connexion</h1>
+          <p>Accédez à votre tableau de bord</p>
+        </div>
+
+        <!-- Body -->
+        <div class="login-body">
+          <!-- Error Message -->
+          <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <%= error %>
+          </div>
+          <% } %>
+
+          <!-- Login Form -->
+          <form method="POST" action="/auth/login" id="loginForm">
+            <!-- Email Field -->
+            <div class="form-group">
+              <label for="email" class="form-label">
+                <i class="fas fa-envelope me-1"></i>
+                Adresse e-mail
+              </label>
+              <div class="input-icon">
+                <i class="fas fa-envelope"></i>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="votre@email.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+              <label for="password" class="form-label">
+                <i class="fas fa-lock me-1"></i>
+                Mot de passe
+              </label>
+              <div class="input-icon">
+                <i class="fas fa-lock"></i>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Remember & Forgot -->
+            <div class="remember-forgot">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="remember"
+                  name="remember"
+                />
+                <label class="form-check-label" for="remember">
+                  Se souvenir de moi
+                </label>
+              </div>
+              <a href="/auth/forgot-password" class="forgot-link">
+                <i class="fas fa-key me-1"></i>
+                Mot de passe oublié ?
+              </a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-login" id="submitBtn">
+              <i class="fas fa-sign-in-alt me-2"></i>
+              Se connecter
+            </button>
+          </form>
+
+          <!-- Divider -->
+          <div class="divider">
+            <span>ou</span>
+          </div>
+
+          <!-- Register Link -->
+          <div class="register-link">
+            <p>Pas encore de compte ?</p>
+            <a href="/auth/register">
+              <i class="fas fa-user-plus me-2"></i>
+              Créer un compte
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+      // Form submission with loading state
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function () {
+          const submitBtn = document.getElementById("submitBtn");
+          const originalText = submitBtn.innerHTML;
+
+          // Add loading state
+          submitBtn.disabled = true;
+          submitBtn.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-2"></span>Connexion...';
+
+          // Reset button after 3 seconds (in case of error)
+          setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+          }, 3000);
+        });
+
+      // Auto-focus on first empty field
+      document.addEventListener("DOMContentLoaded", function () {
+        const emailField = document.getElementById("email");
+        const passwordField = document.getElementById("password");
+
+        if (!emailField.value) {
+          emailField.focus();
+        } else if (!passwordField.value) {
+          passwordField.focus();
+        }
+      });
+
+      // Enhanced form validation
+      const form = document.getElementById("loginForm");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+
+      function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      function showFieldError(field, message) {
+        field.style.borderColor = "#ef4444";
+        field.style.boxShadow = "0 0 0 3px rgba(239, 68, 68, 0.1)";
+
+        // Remove existing error message
+        const existingError = field.parentNode.querySelector(".error-message");
+        if (existingError) {
+          existingError.remove();
+        }
+
+        // Add error message
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error-message";
+        errorDiv.style.color = "#ef4444";
+        errorDiv.style.fontSize = "0.8rem";
+        errorDiv.style.marginTop = "0.25rem";
+        errorDiv.innerHTML =
+          '<i class="fas fa-exclamation-circle me-1"></i>' + message;
+        field.parentNode.appendChild(errorDiv);
+      }
+
+      function clearFieldError(field) {
+        field.style.borderColor = "";
+        field.style.boxShadow = "";
+
+        const errorMessage = field.parentNode.querySelector(".error-message");
+        if (errorMessage) {
+          errorMessage.remove();
+        }
+      }
+
+      emailInput.addEventListener("blur", function () {
+        if (this.value && !validateEmail(this.value)) {
+          showFieldError(this, "Veuillez entrer une adresse e-mail valide");
+        } else {
+          clearFieldError(this);
+        }
+      });
+
+      emailInput.addEventListener("input", function () {
+        if (this.value && validateEmail(this.value)) {
+          clearFieldError(this);
+        }
+      });
+
+      passwordInput.addEventListener("input", function () {
+        clearFieldError(this);
+      });
+
+      // Enhanced keyboard navigation
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && e.target.tagName === "INPUT") {
+          e.preventDefault();
+          const form = e.target.closest("form");
+          const formData = new FormData(form);
+          const email = formData.get("email");
+          const password = formData.get("password");
+
+          if (email && password && validateEmail(email)) {
+            form.submit();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

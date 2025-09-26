@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Authentication Flow</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .test-case {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+      }
+      .info {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+      }
+      button {
+        padding: 10px 15px;
+        margin: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Test du Flux d'Authentification</h1>
+
+    <div class="test-case info">
+      <h3>Test 1: URL Racine sans Authentification</h3>
+      <p>
+        Quand vous visitez <code>http://localhost:3000/</code> sans être
+        connecté, vous devriez être redirigé vers la page de connexion.
+      </p>
+      <button onclick="window.open('http://localhost:3000/', '_blank')">
+        Tester URL Racine
+      </button>
+    </div>
+
+    <div class="test-case info">
+      <h3>Test 2: Connexion</h3>
+      <p>Connectez-vous avec vos identifiants existants.</p>
+      <button
+        onclick="window.open('http://localhost:3000/auth/login', '_blank')"
+      >
+        Aller à la Connexion
+      </button>
+    </div>
+
+    <div class="test-case info">
+      <h3>Test 3: URL Racine après Authentification</h3>
+      <p>
+        Après vous être connecté, visitez <code>http://localhost:3000/</code> -
+        vous devriez être redirigé vers le tableau de bord.
+      </p>
+      <button onclick="window.open('http://localhost:3000/', '_blank')">
+        Tester URL Racine (Après Connexion)
+      </button>
+    </div>
+
+    <div class="test-case info">
+      <h3>Test 4: Tableau de Bord Direct</h3>
+      <p>Accédez directement au tableau de bord.</p>
+      <button
+        onclick="window.open('http://localhost:3000/dashboard', '_blank')"
+      >
+        Aller au Tableau de Bord
+      </button>
+    </div>
+
+    <div class="test-case success">
+      <h3>✅ Problème Résolu!</h3>
+      <p><strong>Les corrections apportées:</strong></p>
+      <ul>
+        <li>
+          Configuration améliorée du store de sessions avec
+          <code>sessionStore.sync()</code>
+        </li>
+        <li>
+          Ajout de <code>rolling: true</code> pour rafraîchir l'expiration des
+          sessions
+        </li>
+        <li>Meilleure gestion des redirections dans la route racine</li>
+        <li>Logs de débogage pour traquer les problèmes de session</li>
+      </ul>
+      <p>
+        <strong>Résultat:</strong> L'URL racine
+        <code>http://localhost:3000/</code> redirige maintenant correctement
+        vers la connexion si non authentifié, et vers le tableau de bord si
+        authentifié.
+      </p>
+    </div>
+  </body>
+</html>

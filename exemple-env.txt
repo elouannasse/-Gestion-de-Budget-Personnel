@@ -1,0 +1,16 @@
+# EXEMPLE DE CONFIGURATION - REMPLACEZ PAR VOS VRAIES INFORMATIONS
+
+# Email Configuration (SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=VOTRE_EMAIL@gmail.com
+SMTP_PASS=VOTRE_MOT_DE_PASSE_APP_16_CARACTERES
+
+# EXEMPLE CONCRET (remplacez par vos vraies données):
+# SMTP_USER=moncompte@gmail.com  
+# SMTP_PASS=abcdefghijklmnop
+
+# ⚠️  IMPORTANT: 
+# - Utilisez votre VRAI email Gmail
+# - Utilisez le mot de passe d'APPLICATION (pas votre mot de passe Gmail normal)
+# - Le mot de passe d'app fait 16 caractères (généré par Google)

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tableau de bord - <%= user ? user.name : 'Utilisateur' %></title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+
+      .dashboard-container {
+        min-height: 100vh;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .navbar-custom {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .main-content {
+        padding: 2rem;
+      }
+
+      .welcome-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .stats-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+      }
+
+      .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .stats-card .icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        color: white;
+      }
+
+      .stats-card.income .icon {
+        background: linear-gradient(135deg, #28a745, #20c997);
+      }
+
+      .stats-card.expense .icon {
+        background: linear-gradient(135deg, #dc3545, #fd7e14);
+      }
+
+      .stats-card.budget .icon {
+        background: linear-gradient(135deg, #007bff, #6610f2);
+      }
+
+      .stats-card.savings .icon {
+        background: linear-gradient(135deg, #ffc107, #fd7e14);
+      }
+
+      .stats-card h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0.5rem 0;
+        color: #333;
+      }
+
+      .stats-card p {
+        color: #666;
+        margin: 0;
+        font-weight: 500;
+      }
+
+      .quick-actions {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-top: 2rem;
+      }
+
+      .btn-action {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin: 0.5rem;
+      }
+
+      .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        color: white;
+      }
+
+      .btn-secondary-action {
+        background: transparent;
+        border: 2px solid #667eea;
+        border-radius: 12px;
+        color: #667eea;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin: 0.5rem;
+      }
+
+      .btn-secondary-action:hover {
+        background: #667eea;
+        color: white;
+      }
+
+      .dropdown-menu {
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border: none;
+      }
+
+      .dropdown-item {
+        padding: 0.75rem 1.25rem;
+        transition: all 0.3s ease;
+      }
+
+      .dropdown-item:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          padding: 1rem;
+        }
+
+        .welcome-card,
+        .quick-actions {
+          padding: 1.5rem;
+        }
+
+        .stats-card h3 {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Navigation -->
+      <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+          <a class="navbar-brand" href="/dashboard">
+            <i class="fas fa-wallet me-2"></i>
+            Gestion de Budget
+          </a>
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link active" href="/dashboard">
+                  <i class="fas fa-home me-1"></i>
+                  Tableau de bord
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/transactions">
+                  <i class="fas fa-exchange-alt me-1"></i>
+                  Transactions
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/budgets">
+                  <i class="fas fa-chart-pie me-1"></i>
+                  Budgets
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/savings">
+                  <i class="fas fa-piggy-bank me-1"></i>
+                  Épargne
+                </a>
+              </li>
+            </ul>
+
+            <div class="dropdown">
+              <a
+                class="nav-link dropdown-toggle d-flex align-items-center"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                <i class="fas fa-user-circle me-2 fs-4"></i>
+                <%= user ? user.name : 'Utilisateur' %>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item" href="/profile">
+                    <i class="fas fa-user me-2"></i>
+                    Mon Profil
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/settings">
+                    <i class="fas fa-cog me-2"></i>
+                    Paramètres
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item text-danger" href="/auth/logout">
+                    <i class="fas fa-sign-out-alt me-2"></i>
+                    Déconnexion
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="container">
+          <!-- Welcome Card -->
+          <div class="welcome-card">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h1 class="mb-3">
+                  <i class="fas fa-sun text-warning me-2"></i>
+                  Bonjour, <%= user ? user.name : 'Utilisateur' %>!
+                </h1>
+                <p class="lead mb-0">
+                  Bienvenue sur votre tableau de bord de gestion financière.
+                  Suivez vos revenus, dépenses et objectifs d'épargne en temps
+                  réel.
+                </p>
+              </div>
+              <div class="col-md-4 text-center">
+                <i
+                  class="fas fa-chart-line"
+                  style="font-size: 4rem; color: #667eea"
+                ></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistics Cards -->
+          <div class="row g-4 mb-4">
+            <div class="col-md-3 col-sm-6">
+              <div class="stats-card income">
+                <div class="icon">
+                  <i class="fas fa-arrow-up"></i>
+                </div>
+                <h3>€0.00</h3>
+                <p>Revenus ce mois</p>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+              <div class="stats-card expense">
+                <div class="icon">
+                  <i class="fas fa-arrow-down"></i>
+                </div>
+                <h3>€0.00</h3>
+                <p>Dépenses ce mois</p>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+              <div class="stats-card budget">
+                <div class="icon">
+                  <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3>0</h3>
+                <p>Budgets actifs</p>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+              <div class="stats-card savings">
+                <div class="icon">
+                  <i class="fas fa-piggy-bank"></i>
+                </div>
+                <h3>€0.00</h3>
+                <p>Objectifs d'épargne</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="quick-actions">
+            <h3 class="mb-4">
+              <i class="fas fa-bolt text-primary me-2"></i>
+              Actions rapides
+            </h3>
+            <div class="text-center">
+              <a href="/transactions/add" class="btn-action">
+                <i class="fas fa-plus me-2"></i>
+                Ajouter une transaction
+              </a>
+              <a href="/budgets/create" class="btn-secondary-action">
+                <i class="fas fa-chart-pie me-2"></i>
+                Créer un budget
+              </a>
+              <a href="/savings/create" class="btn-action">
+                <i class="fas fa-target me-2"></i>
+                Nouvel objectif d'épargne
+              </a>
+              <a href="/reports" class="btn-secondary-action">
+                <i class="fas fa-chart-bar me-2"></i>
+                Voir les rapports
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // Add some interactivity
+      document.addEventListener("DOMContentLoaded", function () {
+        // Animate stats cards on load
+        const statsCards = document.querySelectorAll(".stats-card");
+        statsCards.forEach((card, index) => {
+          setTimeout(() => {
+            card.style.animation = `fadeInUp 0.6s ease-out ${
+              index * 0.1
+            }s both`;
+          }, 100);
+        });
+      });
+    </script>
+  </body>
+</html>

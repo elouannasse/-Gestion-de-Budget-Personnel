@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> - Gestion de Budget</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar-custom {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .main-content {
+        min-height: calc(100vh - 76px);
+        padding-top: 76px;
+      }
+
+      .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn {
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .badge {
+        border-radius: 8px;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeInUp 0.6s ease-out;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold text-primary" href="/dashboard">
+          <i class="fas fa-wallet me-2"></i>
+          Gestion de Budget
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard">
+                <i class="fas fa-home me-1"></i>
+                Tableau de bord
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/transactions">
+                <i class="fas fa-exchange-alt me-1"></i>
+                Transactions
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/budgets">
+                <i class="fas fa-chart-pie me-1"></i>
+                Budgets
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/savings">
+                <i class="fas fa-piggy-bank me-1"></i>
+                Épargne
+              </a>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav">
+            <!-- Notifications -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link position-relative"
+                href="#"
+                id="notificationDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="fas fa-bell"></i>
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  style="font-size: 0.6em"
+                >
+                  3
+                  <span class="visually-hidden">notifications non lues</span>
+                </span>
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="notificationDropdown"
+              >
+                <li><h6 class="dropdown-header">Notifications</h6></li>
+                <li>
+                  <a class="dropdown-item" href="#"
+                    ><i class="fas fa-info-circle text-info me-2"></i>Budget
+                    mensuel atteint</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#"
+                    ><i
+                      class="fas fa-exclamation-triangle text-warning me-2"
+                    ></i
+                    >Dépense importante</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#"
+                    ><i class="fas fa-check-circle text-success me-2"></i
+                    >Objectif d'épargne atteint</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item text-center" href="#">Voir toutes</a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Profil utilisateur -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle d-flex align-items-center"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <div
+                  class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2"
+                  style="width: 32px; height: 32px"
+                >
+                  <i class="fas fa-user"></i>
+                </div>
+                <%= user ? user.name : 'Utilisateur' %>
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown"
+              >
+                <li>
+                  <a class="dropdown-item" href="/profile"
+                    ><i class="fas fa-user me-2"></i>Mon Profil</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/settings"
+                    ><i class="fas fa-cog me-2"></i>Paramètres</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/help"
+                    ><i class="fas fa-question-circle me-2"></i>Aide</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <form method="POST" action="/auth/logout" class="d-inline">
+                    <button type="submit" class="dropdown-item">
+                      <i class="fas fa-sign-out-alt me-2"></i>
+                      Déconnexion
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (success && success.length > 0) { %>
+    <div
+      class="alert alert-success alert-dismissible fade show position-fixed"
+      style="top: 90px; right: 20px; z-index: 1050; max-width: 400px"
+    >
+      <i class="fas fa-check-circle me-2"></i>
+      <%= success[0] %>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <% } %> <% if (error && error.length > 0) { %>
+    <div
+      class="alert alert-danger alert-dismissible fade show position-fixed"
+      style="top: 90px; right: 20px; z-index: 1050; max-width: 400px"
+    >
+      <i class="fas fa-exclamation-circle me-2"></i>
+      <%= error[0] %>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <% } %> <% if (warning && warning.length > 0) { %>
+    <div
+      class="alert alert-warning alert-dismissible fade show position-fixed"
+      style="top: 90px; right: 20px; z-index: 1050; max-width: 400px"
+    >
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      <%= warning[0] %>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <% } %> <% if (info && info.length > 0) { %>
+    <div
+      class="alert alert-info alert-dismissible fade show position-fixed"
+      style="top: 90px; right: 20px; z-index: 1050; max-width: 400px"
+    >
+      <i class="fas fa-info-circle me-2"></i>
+      <%= info[0] %>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <div class="main-content"></div>
+  </body>
+</html>

@@ -1,0 +1,502 @@
+<%- include('../layouts/header') %>
+
+<div class="container-fluid py-4">
+  <!-- Header avec breadcrumb -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/dashboard">Tableau de bord</a></li>
+          <li class="breadcrumb-item active">Transactions</li>
+        </ol>
+      </nav>
+      
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-0">
+          <i class="fas fa-exchange-alt text-primary me-2"></i>
+          Mes Transactions
+        </h1>
+        <div>
+          <a href="/transactions/export<% if (Object.keys(filters).length > 0) { %>?<%= new URLSearchParams(filters).toString() %><% } %>" class="btn btn-outline-success me-2">
+            <i class="fas fa-download me-1"></i>
+            Export CSV
+          </a>
+          <a href="/transactions/create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>
+            Nouvelle Transaction
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+              <h6 class="card-title mb-1">Revenus Totaux</h6>
+              <h4 class="mb-0"><%= stats.totalIncome.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) %></h4>
+            </div>
+            <i class="fas fa-arrow-up fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-danger text-white">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+              <h6 class="card-title mb-1">Dépenses Totales</h6>
+              <h4 class="mb-0"><%= stats.totalExpense.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) %></h4>
+            </div>
+            <i class="fas fa-arrow-down fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-<%= stats.balance >= 0 ? 'info' : 'warning' %> text-white">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+              <h6 class="card-title mb-1">Solde</h6>
+              <h4 class="mb-0"><%= stats.balance.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) %></h4>
+            </div>
+            <i class="fas fa-balance-scale fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-secondary text-white">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+              <h6 class="card-title mb-1">Nb Transactions</h6>
+              <h4 class="mb-0"><%= stats.transactionCount %></h4>
+            </div>
+            <i class="fas fa-list fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h6 class="card-title mb-0">
+        <i class="fas fa-filter me-2"></i>
+        Filtres et Recherche
+      </h6>
+    </div>
+    <div class="card-body">
+      <form method="GET" action="/transactions" id="filtersForm">
+        <div class="row g-3">
+          <!-- Recherche -->
+          <div class="col-md-3">
+            <label for="search" class="form-label">Recherche</label>
+            <input type="text" class="form-control" id="search" name="search" 
+                   value="<%= filters.search || '' %>" 
+                   placeholder="Description ou catégorie...">
+          </div>
+          
+          <!-- Type -->
+          <div class="col-md-2">
+            <label for="type" class="form-label">Type</label>
+            <select class="form-select" id="type" name="type">
+              <option value="">Tous</option>
+              <option value="income" <%= filters.type === 'income' ? 'selected' : '' %>>Revenus</option>
+              <option value="expense" <%= filters.type === 'expense' ? 'selected' : '' %>>Dépenses</option>
+            </select>
+          </div>
+          
+          <!-- Catégorie -->
+          <div class="col-md-2">
+            <label for="category" class="form-label">Catégorie</label>
+            <select class="form-select" id="category" name="category">
+              <option value="">Toutes</option>
+              <% categories.all.forEach(cat => { %>
+                <option value="<%= cat %>" <%= filters.category === cat ? 'selected' : '' %>>
+                  <%= cat %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+          
+          <!-- Date de -->
+          <div class="col-md-2">
+            <label for="dateFrom" class="form-label">Du</label>
+            <input type="date" class="form-control" id="dateFrom" name="dateFrom" 
+                   value="<%= filters.dateFrom || '' %>">
+          </div>
+          
+          <!-- Date à -->
+          <div class="col-md-2">
+            <label for="dateTo" class="form-label">Au</label>
+            <input type="date" class="form-control" id="dateTo" name="dateTo" 
+                   value="<%= filters.dateTo || '' %>">
+          </div>
+          
+          <!-- Actions -->
+          <div class="col-md-1 d-flex align-items-end">
+            <div class="btn-group w-100" role="group">
+              <button type="submit" class="btn btn-primary btn-sm">
+                <i class="fas fa-search"></i>
+              </button>
+              <a href="/transactions" class="btn btn-outline-secondary btn-sm" title="Effacer les filtres">
+                <i class="fas fa-times"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Préservation des paramètres de tri -->
+        <input type="hidden" name="orderBy" value="<%= orderBy %>">
+        <input type="hidden" name="orderDir" value="<%= orderDir %>">
+      </form>
+    </div>
+  </div>
+
+  <!-- Tableau des transactions -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h6 class="card-title mb-0">
+        Transactions (<%= totalTransactions %> résultats)
+      </h6>
+      <div class="btn-group btn-group-sm" role="group">
+        <input type="button" class="btn btn-outline-secondary" value="<%= limit %>" onclick="changeLimit(5)" <%= limit === 5 ? 'disabled' : '' %>>
+        <input type="button" class="btn btn-outline-secondary" value="10" onclick="changeLimit(10)" <%= limit === 10 ? 'disabled' : '' %>>
+        <input type="button" class="btn btn-outline-secondary" value="25" onclick="changeLimit(25)" <%= limit === 25 ? 'disabled' : '' %>>
+        <input type="button" class="btn btn-outline-secondary" value="50" onclick="changeLimit(50)" <%= limit === 50 ? 'disabled' : '' %>>
+      </div>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>
+              <a href="?<%= new URLSearchParams({...filters, orderBy: 'date', orderDir: orderBy === 'date' && orderDir === 'ASC' ? 'DESC' : 'ASC'}).toString() %>" 
+                 class="text-decoration-none text-dark">
+                Date 
+                <% if (orderBy === 'date') { %>
+                  <i class="fas fa-sort-<%= orderDir === 'ASC' ? 'up' : 'down' %> ms-1"></i>
+                <% } else { %>
+                  <i class="fas fa-sort ms-1 text-muted"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>Type</th>
+            <th>
+              <a href="?<%= new URLSearchParams({...filters, orderBy: 'category', orderDir: orderBy === 'category' && orderDir === 'ASC' ? 'DESC' : 'ASC'}).toString() %>" 
+                 class="text-decoration-none text-dark">
+                Catégorie 
+                <% if (orderBy === 'category') { %>
+                  <i class="fas fa-sort-<%= orderDir === 'ASC' ? 'up' : 'down' %> ms-1"></i>
+                <% } else { %>
+                  <i class="fas fa-sort ms-1 text-muted"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>Description</th>
+            <th>
+              <a href="?<%= new URLSearchParams({...filters, orderBy: 'amount', orderDir: orderBy === 'amount' && orderDir === 'ASC' ? 'DESC' : 'ASC'}).toString() %>" 
+                 class="text-decoration-none text-dark">
+                Montant 
+                <% if (orderBy === 'amount') { %>
+                  <i class="fas fa-sort-<%= orderDir === 'ASC' ? 'up' : 'down' %> ms-1"></i>
+                <% } else { %>
+                  <i class="fas fa-sort ms-1 text-muted"></i>
+                <% } %>
+              </a>
+            </th>
+            <th width="120">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (transactions.length === 0) { %>
+            <tr>
+              <td colspan="6" class="text-center py-4">
+                <div class="text-muted">
+                  <i class="fas fa-inbox fa-2x mb-2"></i>
+                  <p class="mb-0">Aucune transaction trouvée</p>
+                  <% if (Object.keys(filters).length > 0) { %>
+                    <small>Essayez de modifier vos filtres de recherche</small>
+                  <% } else { %>
+                    <a href="/transactions/create" class="btn btn-sm btn-primary mt-2">
+                      Créer ma première transaction
+                    </a>
+                  <% } %>
+                </div>
+              </td>
+            </tr>
+          <% } else { %>
+            <% transactions.forEach(transaction => { %>
+              <tr>
+                <td>
+                  <span class="fw-medium">
+                    <%= new Date(transaction.date).toLocaleDateString('fr-FR') %>
+                  </span>
+                </td>
+                <td>
+                  <span class="badge bg-<%= transaction.type === 'income' ? 'success' : 'danger' %>">
+                    <i class="fas fa-arrow-<%= transaction.type === 'income' ? 'up' : 'down' %> me-1"></i>
+                    <%= transaction.type === 'income' ? 'Revenu' : 'Dépense' %>
+                  </span>
+                </td>
+                <td>
+                  <span class="badge bg-secondary">
+                    <%= transaction.category %>
+                  </span>
+                </td>
+                <td>
+                  <span class="text-muted">
+                    <%= transaction.description || '-' %>
+                  </span>
+                </td>
+                <td>
+                  <span class="fw-bold text-<%= transaction.type === 'income' ? 'success' : 'danger' %>">
+                    <%= transaction.type === 'income' ? '+' : '-' %><%= transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) %>
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <a href="/transactions/<%= transaction.id %>" class="btn btn-outline-info" title="Voir">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="/transactions/<%= transaction.id %>/edit" class="btn btn-outline-warning" title="Modifier">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <button type="button" class="btn btn-outline-danger" title="Supprimer" 
+                            onclick="confirmDelete(<%= transaction.id %>, '<%= JSON.stringify(transaction.category) %>')">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+      <div class="card-footer">
+        <nav aria-label="Pagination des transactions">
+          <ul class="pagination justify-content-center mb-0">
+            <!-- Précédent -->
+            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+              <a class="page-link" href="?<%= new URLSearchParams({...filters, page: currentPage - 1, limit, orderBy, orderDir}).toString() %>">
+                <i class="fas fa-chevron-left"></i>
+              </a>
+            </li>
+            
+            <!-- Pages -->
+            <% 
+              const startPage = Math.max(1, currentPage - 2);
+              const endPage = Math.min(totalPages, currentPage + 2);
+              
+              if (startPage > 1) { 
+            %>
+              <li class="page-item">
+                <a class="page-link" href="?<%= new URLSearchParams({...filters, page: 1, limit, orderBy, orderDir}).toString() %>">1</a>
+              </li>
+              <% if (startPage > 2) { %>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+              <% } %>
+            <% } %>
+            
+            <% for (let i = startPage; i <= endPage; i++) { %>
+              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="?<%= new URLSearchParams({...filters, page: i, limit, orderBy, orderDir}).toString() %>">
+                  <%= i %>
+                </a>
+              </li>
+            <% } %>
+            
+            <% if (endPage < totalPages) { %>
+              <% if (endPage < totalPages - 1) { %>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+              <% } %>
+              <li class="page-item">
+                <a class="page-link" href="?<%= new URLSearchParams({...filters, page: totalPages, limit, orderBy, orderDir}).toString() %>">
+                  <%= totalPages %>
+                </a>
+              </li>
+            <% } %>
+            
+            <!-- Suivant -->
+            <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+              <a class="page-link" href="?<%= new URLSearchParams({...filters, page: currentPage + 1, limit, orderBy, orderDir}).toString() %>">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">
+          <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+          Confirmer la suppression
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir supprimer cette transaction ?</p>
+        <div class="alert alert-warning">
+          <strong>Attention :</strong> Cette action est irréversible !
+        </div>
+        <div id="transactionDetails" class="bg-light p-3 rounded">
+          <!-- Détails de la transaction à supprimer -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+          <i class="fas fa-trash me-1"></i>
+          Supprimer définitivement
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts JavaScript -->
+<script>
+let transactionToDelete = null;
+
+// Fonction pour confirmer la suppression
+function confirmDelete(id, category) {
+  transactionToDelete = id;
+  
+  // Mise à jour des détails dans la modal
+  document.getElementById('transactionDetails').innerHTML = `
+    <strong>Catégorie :</strong> ${category}<br>
+    <strong>ID :</strong> #${id}
+  `;
+  
+  // Affichage de la modal
+  const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+  modal.show();
+}
+
+// Confirmation définitive de suppression
+document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+  if (!transactionToDelete) return;
+  
+  try {
+    const response = await fetch(`/transactions/${transactionToDelete}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Fermeture de la modal
+      bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+      
+      // Affichage du message de succès
+      showToast('Transaction supprimée avec succès !', 'success');
+      
+      // Rechargement de la page après un délai
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } else {
+      showToast('Erreur lors de la suppression', 'error');
+    }
+  } catch (error) {
+    console.error('Erreur:', error);
+    showToast('Erreur lors de la suppression', 'error');
+  }
+});
+
+// Fonction pour changer la limite par page
+function changeLimit(newLimit) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('limit', newLimit);
+  url.searchParams.set('page', 1); // Reset à la première page
+  window.location.href = url.toString();
+}
+
+// Recherche en temps réel
+let searchTimeout;
+document.getElementById('search').addEventListener('input', function(e) {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    document.getElementById('filtersForm').submit();
+  }, 500);
+});
+
+// Auto-submit des selects
+document.getElementById('type').addEventListener('change', function() {
+  document.getElementById('filtersForm').submit();
+});
+
+document.getElementById('category').addEventListener('change', function() {
+  document.getElementById('filtersForm').submit();
+});
+
+// Fonction pour afficher les toasts
+function showToast(message, type) {
+  // Création du toast
+  const toastContainer = document.getElementById('toast-container') || createToastContainer();
+  
+  const toast = document.createElement('div');
+  toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0`;
+  toast.setAttribute('role', 'alert');
+  toast.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+        ${message}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  `;
+  
+  toastContainer.appendChild(toast);
+  
+  const bsToast = new bootstrap.Toast(toast, {
+    autohide: true,
+    delay: 3000
+  });
+  
+  bsToast.show();
+  
+  // Suppression après fermeture
+  toast.addEventListener('hidden.bs.toast', () => {
+    toast.remove();
+  });
+}
+
+// Création du conteneur de toasts s'il n'existe pas
+function createToastContainer() {
+  const container = document.createElement('div');
+  container.id = 'toast-container';
+  container.className = 'toast-container position-fixed top-0 end-0 p-3';
+  container.style.zIndex = '1060';
+  document.body.appendChild(container);
+  return container;
+}
+</script>
+
+<%- include('../layouts/footer') %>
