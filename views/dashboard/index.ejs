@@ -365,19 +365,33 @@
               Actions rapides
             </h3>
             <div class="text-center">
-              <a href="/transactions/add" class="btn-action">
+              <br />
+
+              <a
+                href="/transactions/create"
+                class="btn btn-primary btn-lg me-2"
+                id="transaction-btn"
+              >
                 <i class="fas fa-plus me-2"></i>
                 Ajouter une transaction
               </a>
-              <a href="/budgets/create" class="btn-secondary-action">
+              <a
+                href="/transactions"
+                class="btn btn-success btn-lg me-2"
+                title="Gérer vos transactions"
+              >
+                <i class="fas fa-list me-2"></i>
+                Mes Transactions
+              </a>
+              <a href="/budgets/create" class="btn btn-outline-primary btn-lg">
                 <i class="fas fa-chart-pie me-2"></i>
                 Créer un budget
               </a>
-              <a href="/savings/create" class="btn-action">
+              <a href="/savings/create" class="btn btn-success btn-lg">
                 <i class="fas fa-target me-2"></i>
                 Nouvel objectif d'épargne
               </a>
-              <a href="/reports" class="btn-secondary-action">
+              <a href="/reports" class="btn btn-outline-info btn-lg">
                 <i class="fas fa-chart-bar me-2"></i>
                 Voir les rapports
               </a>
@@ -403,6 +417,38 @@
           }, 100);
         });
       });
+
+      // Debug complet du bouton transaction
+      const transactionLink = document.querySelector(
+        'a[href="/transactions/create"]'
+      );
+      console.log("🔍 Bouton trouvé:", transactionLink);
+
+      if (transactionLink) {
+        console.log("✅ Bouton existe");
+        console.log("📍 Position:", transactionLink.getBoundingClientRect());
+        console.log("👆 Styles:", window.getComputedStyle(transactionLink));
+
+        // Test de clic manuel
+        transactionLink.addEventListener("click", function (e) {
+          console.log("🎯 CLIC DÉTECTÉ!");
+          console.log("🔗 URL:", this.href);
+          console.log("⚡ Event:", e);
+
+          // Test si on peut naviguer
+          try {
+            console.log("🚀 Tentative de navigation...");
+            window.location.href = this.href;
+          } catch (error) {
+            console.error("❌ Erreur de navigation:", error);
+          }
+        });
+      } else {
+        console.error("❌ Bouton NON TROUVÉ!");
+      }
+
+      // Test général
+      console.log("✅ Dashboard chargé à", new Date().toLocaleTimeString());
     </script>
   </body>
 </html>

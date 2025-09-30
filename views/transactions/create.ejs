@@ -1,479 +1,774 @@
 <%- include('../layouts/header') %>
 
-<div class="container-fluid py-4">
-  <!-- Header avec breadcrumb -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="/dashboard">Tableau de bord</a>
-          </li>
-          <li class="breadcrumb-item">
-            <a href="/transactions">Transactions</a>
-          </li>
-          <li class="breadcrumb-item active">Nouvelle</li>
-        </ol>
-      </nav>
+<!-- Modal Overlay Background -->
+<div
+  class="modal-overlay-bg"
+  style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  "
+>
+  <!-- Modal Content Container -->
+  <div
+    class="modal-content-container"
+    style="
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalFadeIn 0.3s ease-out;
+    "
+  >
+    <!-- Close Button -->
+    <a
+      href="/transactions"
+      class="btn-close-modal"
+      style="
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #666;
+        transition: all 0.2s ease;
+      "
+      onmouseover="this.style.background='rgba(0,0,0,0.2)'"
+      onmouseout="this.style.background='rgba(0,0,0,0.1)'"
+    >
+      <i class="fas fa-times"></i>
+    </a>
 
-      <h1 class="h3 mb-0">
-        <i class="fas fa-plus text-primary me-2"></i>
-        Nouvelle Transaction
-      </h1>
-    </div>
-  </div>
+    <div class="container-fluid py-4" style="background: transparent">
+      <!-- Header avec breadcrumb -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="/dashboard">Tableau de bord</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="/transactions">Transactions</a>
+              </li>
+              <li class="breadcrumb-item active">Nouvelle</li>
+            </ol>
+          </nav>
 
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h5 class="card-title mb-0">
-            <i class="fas fa-edit me-2"></i>
-            Ajouter une Transaction
-          </h5>
+          <h1 class="h3 mb-0">
+            <i
+              class="fas fa-plus text-primary me-2"
+              style="animation: bounce 0.6s ease-out"
+            ></i>
+            Nouvelle Transaction
+          </h1>
         </div>
+      </div>
 
-        <form
-          id="transactionForm"
-          method="POST"
-          action="/transactions"
-          novalidate
-        >
-          <div class="card-body">
-            <!-- Affichage des erreurs -->
-            <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
-            <div class="alert alert-danger">
-              <h6>
-                <i class="fas fa-exclamation-triangle me-2"></i>Erreurs de
-                validation :
-              </h6>
-              <ul class="mb-0">
-                <% errors.forEach(error => { %>
-                <li><%= error.msg %></li>
-                <% }) %>
-              </ul>
-            </div>
-            <% } %>
-
-            <!-- Toggle Type de Transaction -->
-            <div class="mb-4">
-              <label class="form-label fw-bold">Type de Transaction *</label>
-              <div
-                class="btn-group w-100"
-                role="group"
-                aria-label="Type de transaction"
-              >
-                <input type="radio" class="btn-check" name="type" id="income"
-                value="income" <%= (typeof formData !== 'undefined' &&
-                formData.type === 'income') ? 'checked' : '' %>>
-                <label class="btn btn-outline-success" for="income">
-                  <i class="fas fa-arrow-up me-2"></i>
-                  Revenu
-                </label>
-
-                <input type="radio" class="btn-check" name="type" id="expense"
-                value="expense" <%= (typeof formData !== 'undefined' &&
-                formData.type === 'expense') ? 'checked' : (!formData ?
-                'checked' : '') %>>
-                <label class="btn btn-outline-danger" for="expense">
-                  <i class="fas fa-arrow-down me-2"></i>
-                  Dépense
-                </label>
-              </div>
-            </div>
-
-            <!-- Montant -->
-            <div class="mb-3">
-              <label for="amount" class="form-label fw-bold">Montant *</label>
-              <div class="input-group">
-                <span class="input-group-text">€</span>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="amount"
-                  name="amount"
-                  min="0.01"
-                  max="999999.99"
-                  step="0.01"
-                  required
-                  value="<%= (typeof formData !== 'undefined') ? formData.amount : '' %>"
-                  placeholder="0.00"
-                />
-              </div>
-              <div class="form-text">Montant entre 0,01€ et 999 999,99€</div>
-            </div>
-
-            <!-- Catégorie -->
-            <div class="mb-3">
-              <label for="category" class="form-label fw-bold"
-                >Catégorie *</label
-              >
-              <select class="form-select" id="category" name="category">
-                <option value="">Sélectionner une catégorie...</option>
-                <!-- Les options seront ajoutées dynamiquement via JavaScript -->
-              </select>
-
-              <!-- Option nouvelle catégorie -->
-              <div class="mt-2">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="newCategoryToggle"
-                  />
-                  <label class="form-check-label" for="newCategoryToggle">
-                    <i class="fas fa-plus me-1"></i>
-                    Créer une nouvelle catégorie
-                  </label>
-                </div>
-
-                <div id="newCategoryGroup" class="mt-2" style="display: none">
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="newCategory"
-                    name="newCategory"
-                    maxlength="100"
-                    placeholder="Nom de la nouvelle catégorie"
-                    value="<%= (typeof formData !== 'undefined') ? formData.newCategory : '' %>"
-                  />
-                  <div class="form-text">Maximum 100 caractères</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Date -->
-            <div class="mb-3">
-              <label for="date" class="form-label fw-bold">Date</label>
-              <input
-                type="date"
-                class="form-control"
-                id="date"
-                name="date"
-                value="<%= (typeof formData !== 'undefined' && formData.date) ? formData.date : new Date().toISOString().split('T')[0] %>"
-              />
-              <div class="form-text">
-                Laissez vide pour utiliser la date d'aujourd'hui
-              </div>
-            </div>
-
-            <!-- Description -->
-            <div class="mb-3">
-              <label for="description" class="form-label fw-bold"
-                >Description</label
-              >
-              <textarea
-                class="form-control"
-                id="description"
-                name="description"
-                rows="3"
-                maxlength="255"
-                placeholder="Description optionnelle de la transaction..."
-              >
-<%= (typeof formData !== 'undefined') ? formData.description : '' %></textarea
-              >
-              <div class="form-text">
-                <span id="charCount">0</span>/255 caractères
-              </div>
-            </div>
-
-            <!-- Aperçu de la transaction -->
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <div
+            class="card shadow"
+            style="border: none; border-radius: 15px; overflow: hidden"
+          >
             <div
-              id="transactionPreview"
-              class="card bg-light"
-              style="display: none"
+              class="card-header text-white"
+              style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border: none;
+              "
+            >
+              <h5 class="card-title mb-0">
+                <i
+                  class="fas fa-plus-circle me-2"
+                  style="animation: bounce 0.6s ease-out"
+                ></i>
+                Ajouter une Transaction
+              </h5>
+            </div>
+
+            <form
+              id="transactionForm"
+              method="POST"
+              action="/transactions"
+              novalidate
             >
               <div class="card-body">
-                <h6 class="card-title">
-                  <i class="fas fa-eye me-2"></i>
-                  Aperçu
-                </h6>
-                <div id="previewContent">
-                  <!-- Le contenu sera généré par JavaScript -->
+                <!-- Affichage des erreurs -->
+                <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+                <div class="alert alert-danger">
+                  <h6>
+                    <i class="fas fa-exclamation-triangle me-2"></i>Erreurs de
+                    validation :
+                  </h6>
+                  <ul class="mb-0">
+                    <% errors.forEach(error => { %>
+                    <li><%= error.msg %></li>
+                    <% }) %>
+                  </ul>
+                </div>
+                <% } %>
+
+                <!-- Toggle Type de Transaction -->
+                <div class="mb-4">
+                  <label class="form-label fw-bold"
+                    >Type de Transaction *</label
+                  >
+                  <div
+                    class="btn-group w-100"
+                    role="group"
+                    aria-label="Type de transaction"
+                  >
+                    <input type="radio" class="btn-check" name="type"
+                    id="income" value="income" <%= (typeof formData !==
+                    'undefined' && formData.type === 'income') ? 'checked' :
+                    (typeof formData === 'undefined' || !formData.type) ?
+                    'checked' : '' %>>
+                    <label class="btn btn-outline-success" for="income">
+                      <i class="fas fa-arrow-up me-2"></i>
+                      Revenu
+                    </label>
+
+                    <input type="radio" class="btn-check" name="type"
+                    id="expense" value="expense" <%= (typeof formData !==
+                    'undefined' && formData.type === 'expense') ? 'checked' : ''
+                    %>>
+                    <label class="btn btn-outline-danger" for="expense">
+                      <i class="fas fa-arrow-down me-2"></i>
+                      Dépense
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Montant -->
+                <div class="mb-3">
+                  <label for="amount" class="form-label fw-bold"
+                    >Montant *</label
+                  >
+                  <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="amount"
+                      name="amount"
+                      min="0.01"
+                      max="999999.99"
+                      step="0.01"
+                      required
+                      value="<%= (typeof formData !== 'undefined') ? formData.amount : '' %>"
+                      placeholder="0.00"
+                    />
+                  </div>
+                  <div class="form-text">
+                    Montant entre 0,01€ et 999 999,99€
+                  </div>
+                </div>
+
+                <!-- Catégorie -->
+                <div class="mb-3">
+                  <label for="category" class="form-label fw-bold"
+                    >Catégorie *</label
+                  >
+                  <select class="form-select" id="category" name="category">
+                    <option value="">Sélectionner une catégorie...</option>
+                    <!-- Les options seront ajoutées dynamiquement via JavaScript -->
+                  </select>
+
+                  <!-- Option nouvelle catégorie -->
+                  <div class="mt-2">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="newCategoryToggle"
+                      />
+                      <label class="form-check-label" for="newCategoryToggle">
+                        <i class="fas fa-plus me-1"></i>
+                        Créer une nouvelle catégorie
+                      </label>
+                    </div>
+
+                    <div
+                      id="newCategoryGroup"
+                      class="mt-2"
+                      style="display: none"
+                    >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="newCategory"
+                        name="newCategory"
+                        maxlength="100"
+                        placeholder="Nom de la nouvelle catégorie"
+                        value="<%= (typeof formData !== 'undefined') ? formData.newCategory : '' %>"
+                      />
+                      <div class="form-text">Maximum 100 caractères</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Date -->
+                <div class="mb-3">
+                  <label for="date" class="form-label fw-bold">Date</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="date"
+                    name="date"
+                    required
+                  />
+                  <div class="form-text">
+                    Laissez vide pour utiliser la date d'aujourd'hui
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                  <label for="description" class="form-label fw-bold"
+                    >Description</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="description"
+                    name="description"
+                    rows="3"
+                    maxlength="255"
+                    placeholder="Description optionnelle de la transaction..."
+                  >
+></textarea
+                  >
+                  <div class="form-text">
+                    <span id="charCount">0</span>/255 caractères
+                  </div>
+                </div>
+
+                <!-- Aperçu de la transaction -->
+                <div
+                  id="transactionPreview"
+                  class="card bg-light"
+                  style="display: none"
+                >
+                  <div class="card-body">
+                    <h6 class="card-title">
+                      <i class="fas fa-eye me-2"></i>
+                      Aperçu
+                    </h6>
+                    <div id="previewContent">
+                      <!-- Le contenu sera généré par JavaScript -->
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <!-- Actions -->
-          <div class="card-footer bg-light">
-            <div class="d-flex justify-content-between">
-              <a href="/transactions" class="btn btn-secondary">
-                <i class="fas fa-arrow-left me-1"></i>
-                Retour
-              </a>
-              <div>
-                <button
-                  type="button"
-                  class="btn btn-outline-primary me-2"
-                  id="previewBtn"
-                >
-                  <i class="fas fa-eye me-1"></i>
-                  Aperçu
-                </button>
-                <button type="submit" class="btn btn-primary">
-                  <i class="fas fa-save me-1"></i>
-                  Enregistrer
-                </button>
+              <!-- Actions -->
+              <div class="card-footer bg-light">
+                <div class="d-flex justify-content-between">
+                  <a href="/transactions" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Retour
+                  </a>
+                  <div>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary me-2"
+                      id="previewBtn"
+                    >
+                      <i class="fas fa-eye me-1"></i>
+                      Aperçu
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-save me-1"></i>
+                      Enregistrer
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
+
+    <!-- Categories Data -->
+    <script type="application/json" id="categories-data">
+      <%- JSON.stringify(categories) %>
+    </script>
+
+    <!-- Form Data -->
+    <script type="application/json" id="form-data">
+      <%- typeof formData !== 'undefined' ? JSON.stringify(formData) : 'null' %>
+    </script>
+
+    <!-- JavaScript -->
+    <script>
+      // Données des catégories depuis le serveur
+      const categoriesData = document.getElementById("categories-data");
+      const categories = JSON.parse(categoriesData.textContent);
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Éléments du DOM
+        const typeRadios = document.querySelectorAll('input[name="type"]');
+        const categorySelect = document.getElementById("category");
+        const newCategoryToggle = document.getElementById("newCategoryToggle");
+        const newCategoryGroup = document.getElementById("newCategoryGroup");
+        const newCategoryInput = document.getElementById("newCategory");
+        const descriptionTextarea = document.getElementById("description");
+        const charCount = document.getElementById("charCount");
+        const previewBtn = document.getElementById("previewBtn");
+        const transactionPreview =
+          document.getElementById("transactionPreview");
+        const form = document.getElementById("transactionForm");
+        const dateInput = document.getElementById("date");
+
+        // Set default date if not already set
+        if (dateInput && !dateInput.value) {
+          dateInput.value = new Date().toISOString().split("T")[0];
+        }
+
+        // Set form data from server if available
+        const formDataElement = document.getElementById("form-data");
+        const formData = formDataElement
+          ? JSON.parse(formDataElement.textContent)
+          : null;
+        if (formData) {
+          if (formData.amount)
+            document.getElementById("amount").value = formData.amount;
+          if (formData.description)
+            document.getElementById("description").value = formData.description;
+          if (formData.newCategory)
+            document.getElementById("newCategory").value = formData.newCategory;
+          if (formData.date) dateInput.value = formData.date;
+        }
+
+        // Debug: vérifier les données
+        console.log("Categories loaded:", categories);
+        console.log("Category select element:", categorySelect);
+
+        // Initialisation
+        updateCategories();
+        updateCharCount();
+
+        // Force la mise à jour des catégories si un type est déjà sélectionné
+        const checkedType = document.querySelector(
+          'input[name="type"]:checked'
+        );
+        if (checkedType) {
+          console.log("Type already selected:", checkedType.value);
+          updateCategories();
+        }
+
+        // Si des données de formulaire existent (après erreur de validation)
+        if (formData && formData.type) {
+          updateCategories();
+          if (formData.newCategory) {
+            newCategoryToggle.checked = true;
+            newCategoryGroup.style.display = "block";
+          }
+        }
+
+        // Gestion du changement de type
+        typeRadios.forEach((radio) => {
+          radio.addEventListener("change", function () {
+            updateCategories();
+            updatePreview();
+
+            // Mise à jour des couleurs
+            updateFormColors();
+          });
+        });
+
+        // Gestion du toggle nouvelle catégorie
+        newCategoryToggle.addEventListener("change", function () {
+          if (this.checked) {
+            newCategoryGroup.style.display = "block";
+            categorySelect.disabled = true;
+            categorySelect.value = "";
+            newCategoryInput.focus();
+          } else {
+            newCategoryGroup.style.display = "none";
+            categorySelect.disabled = false;
+            newCategoryInput.value = "";
+          }
+          updatePreview();
+        });
+
+        // Compteur de caractères
+        descriptionTextarea.addEventListener("input", function () {
+          updateCharCount();
+          updatePreview();
+        });
+
+        // Mise à jour automatique de l'aperçu
+        const formInputs = ["amount", "category", "newCategory", "date"];
+        formInputs.forEach((inputId) => {
+          const input = document.getElementById(inputId);
+          if (input) {
+            input.addEventListener("input", updatePreview);
+            input.addEventListener("change", updatePreview);
+          }
+        });
+
+        // Bouton aperçu
+        previewBtn.addEventListener("click", function () {
+          updatePreview();
+          if (transactionPreview.style.display === "none") {
+            transactionPreview.style.display = "block";
+            this.innerHTML = '<i class="fas fa-eye-slash me-1"></i>Masquer';
+          } else {
+            transactionPreview.style.display = "none";
+            this.innerHTML = '<i class="fas fa-eye me-1"></i>Aperçu';
+          }
+        });
+
+        // Validation du formulaire
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          if (validateForm()) {
+            // Animation de soumission
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML =
+              '<i class="fas fa-spinner fa-spin me-1"></i>Enregistrement...';
+            submitBtn.disabled = true;
+
+            // Soumission du formulaire
+            setTimeout(() => {
+              form.submit();
+            }, 300);
+          }
+        });
+
+        // Fonctions utilitaires
+        function updateCategories() {
+          if (!categorySelect) {
+            console.error("Category select element not found!");
+            return;
+          }
+
+          const selectedType = document.querySelector(
+            'input[name="type"]:checked'
+          )?.value;
+          const categoryList = selectedType ? categories[selectedType] : [];
+
+          console.log(
+            "Updating categories for type:",
+            selectedType,
+            "List:",
+            categoryList
+          );
+
+          // Vider les options existantes
+          categorySelect.innerHTML =
+            '<option value="">Sélectionner une catégorie...</option>';
+
+          // Ajouter les catégories
+          categoryList.forEach((cat) => {
+            const option = document.createElement("option");
+            option.value = cat;
+            option.textContent = cat;
+
+            // Sélection de la catégorie si elle existe dans formData
+            if (formData && formData.category && cat === formData.category) {
+              option.selected = true;
+            }
+
+            categorySelect.appendChild(option);
+          });
+        }
+
+        function updateCharCount() {
+          const count = descriptionTextarea.value.length;
+          charCount.textContent = count;
+          charCount.className =
+            count > 230
+              ? "text-warning"
+              : count > 250
+              ? "text-danger"
+              : "text-muted";
+        }
+
+        function updateFormColors() {
+          const selectedType = document.querySelector(
+            'input[name="type"]:checked'
+          )?.value;
+          const cardHeader = document.querySelector(".card-header");
+
+          if (selectedType === "income") {
+            cardHeader.className = "card-header bg-success text-white";
+          } else {
+            cardHeader.className = "card-header bg-danger text-white";
+          }
+        }
+
+        function updatePreview() {
+          const type = document.querySelector(
+            'input[name="type"]:checked'
+          )?.value;
+          const amount = document.getElementById("amount").value;
+          const category = newCategoryToggle.checked
+            ? newCategoryInput.value
+            : categorySelect.value;
+          const description = descriptionTextarea.value;
+          const date = document.getElementById("date").value;
+
+          if (!type || !amount || !category) {
+            return;
+          }
+
+          const formattedAmount = new Intl.NumberFormat("fr-FR", {
+            style: "currency",
+            currency: "EUR",
+          }).format(parseFloat(amount));
+
+          const formattedDate = date
+            ? new Date(date).toLocaleDateString("fr-FR")
+            : "Aujourd'hui";
+          const typeLabel = type === "income" ? "Revenu" : "Dépense";
+          const typeColor = type === "income" ? "success" : "danger";
+          const typeIcon = type === "income" ? "arrow-up" : "arrow-down";
+
+          document.getElementById("previewContent").innerHTML = `
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="badge bg-${typeColor} mb-2">
+                  <i class="fas fa-${typeIcon} me-1"></i>
+                  ${typeLabel}
+                </span>
+                <h6 class="mb-1">${category}</h6>
+                ${
+                  description
+                    ? `<p class="text-muted small mb-0">${description}</p>`
+                    : ""
+                }
+              </div>
+              <div class="text-end">
+                <h5 class="text-${typeColor} mb-0">
+                  ${type === "income" ? "+" : "-"}${formattedAmount}
+                </h5>
+                <small class="text-muted">${formattedDate}</small>
+              </div>
+            </div>
+          `;
+        }
+
+        function validateForm() {
+          let isValid = true;
+          const errors = [];
+
+          // Validation du type
+          const type = document.querySelector('input[name="type"]:checked');
+          if (!type) {
+            errors.push("Le type de transaction est requis");
+            isValid = false;
+          }
+
+          // Validation du montant
+          const amount = parseFloat(document.getElementById("amount").value);
+          if (!amount || amount < 0.01 || amount > 999999.99) {
+            errors.push("Le montant doit être entre 0,01€ et 999 999,99€");
+            isValid = false;
+          }
+
+          // Validation de la catégorie
+          const category = newCategoryToggle.checked
+            ? newCategoryInput.value
+            : categorySelect.value;
+          if (!category || category.trim().length === 0) {
+            errors.push("La catégorie est requise");
+            isValid = false;
+          }
+
+          // Affichage des erreurs
+          if (!isValid) {
+            showErrors(errors);
+          }
+
+          return isValid;
+        }
+
+        function showErrors(errors) {
+          // Suppression des anciennes erreurs
+          const oldAlert = document.querySelector(".alert-danger");
+          if (oldAlert) {
+            oldAlert.remove();
+          }
+
+          // Création de la nouvelle alerte
+          const alert = document.createElement("div");
+          alert.className = "alert alert-danger";
+          alert.innerHTML = `
+            <h6><i class="fas fa-exclamation-triangle me-2"></i>Erreurs de validation :</h6>
+            <ul class="mb-0">
+              ${errors.map((error) => `<li>${error}</li>`).join("")}
+            </ul>
+          `;
+
+          // Insertion au début du card-body
+          const cardBody = document.querySelector(".card-body");
+          cardBody.insertBefore(alert, cardBody.firstChild);
+
+          // Scroll vers le haut
+          alert.scrollIntoView({ behavior: "smooth" });
+        }
+
+        // Initialisation des couleurs
+        updateFormColors();
+      });
+    </script>
   </div>
 </div>
 
-<!-- JavaScript -->
-<script>
-  // Données des catégories depuis le serveur
-  const categories = {
-    income: <%= JSON.stringify(categories.income) %>,
-    expense: <%= JSON.stringify(categories.expense) %>
-  };
+<style>
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8) translateY(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    // Éléments du DOM
-    const typeRadios = document.querySelectorAll('input[name="type"]');
-    const categorySelect = document.getElementById('category');
-    const newCategoryToggle = document.getElementById('newCategoryToggle');
-    const newCategoryGroup = document.getElementById('newCategoryGroup');
-    const newCategoryInput = document.getElementById('newCategory');
-    const descriptionTextarea = document.getElementById('description');
-    const charCount = document.getElementById('charCount');
-    const previewBtn = document.getElementById('previewBtn');
-    const transactionPreview = document.getElementById('transactionPreview');
-    const form = document.getElementById('transactionForm');
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
 
-    // Initialisation
-    updateCategories();
-    updateCharCount();
+  .modal-content-container::-webkit-scrollbar {
+    width: 8px;
+  }
 
-    // Si des données de formulaire existent (après erreur de validation)
-    <% if (typeof formData !== 'undefined' && formData.type) { %>
-      updateCategories();
-      <% if (formData.newCategory) { %>
-        newCategoryToggle.checked = true;
-        newCategoryGroup.style.display = 'block';
-      <% } %>
-    <% } %>
+  .modal-content-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
 
-    // Gestion du changement de type
-    typeRadios.forEach(radio => {
-      radio.addEventListener('change', function() {
-        updateCategories();
-        updatePreview();
+  .modal-content-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
 
-        // Mise à jour des couleurs
-        updateFormColors();
-      });
-    });
+  .modal-content-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
 
-    // Gestion du toggle nouvelle catégorie
-    newCategoryToggle.addEventListener('change', function() {
-      if (this.checked) {
-        newCategoryGroup.style.display = 'block';
-        categorySelect.disabled = true;
-        categorySelect.value = '';
-        newCategoryInput.focus();
-      } else {
-        newCategoryGroup.style.display = 'none';
-        categorySelect.disabled = false;
-        newCategoryInput.value = '';
-      }
-      updatePreview();
-    });
+  /* Fix dropdown z-index issues - Critical for Bootstrap select functionality */
+  .modal-content-container .form-select,
+  .modal-content-container select {
+    position: relative;
+    z-index: 1060 !important;
+  }
 
-    // Compteur de caractères
-    descriptionTextarea.addEventListener('input', function() {
-      updateCharCount();
-      updatePreview();
-    });
+  /* Ensure modal overlay doesn't interfere with dropdowns */
+  .modal-overlay-bg {
+    z-index: 1040 !important;
+  }
 
-    // Mise à jour automatique de l'aperçu
-    const formInputs = ['amount', 'category', 'newCategory', 'date'];
-    formInputs.forEach(inputId => {
-      const input = document.getElementById(inputId);
-      if (input) {
-        input.addEventListener('input', updatePreview);
-        input.addEventListener('change', updatePreview);
-      }
-    });
+  /* Force dropdown to appear above everything */
+  .modal-content-container .form-select:focus,
+  .modal-content-container select:focus {
+    z-index: 1070 !important;
+  }
 
-    // Bouton aperçu
-    previewBtn.addEventListener('click', function() {
-      updatePreview();
-      if (transactionPreview.style.display === 'none') {
-        transactionPreview.style.display = 'block';
-        this.innerHTML = '<i class="fas fa-eye-slash me-1"></i>Masquer';
-      } else {
-        transactionPreview.style.display = 'none';
-        this.innerHTML = '<i class="fas fa-eye me-1"></i>Aperçu';
-      }
-    });
+  /* Ensure dropdown options appear above modal overlay */
+  .modal-content-container .form-select option,
+  .modal-content-container select option {
+    z-index: 1070 !important;
+  }
 
-    // Validation du formulaire
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
+  /* Fix any Bootstrap dropdown menus */
+  .modal-content-container .dropdown-menu {
+    z-index: 1070 !important;
+  }
 
-      if (validateForm()) {
-        // Animation de soumission
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Enregistrement...';
-        submitBtn.disabled = true;
+  /* Improve form spacing in wider modal */
+  .modal-content-container .form-group {
+    margin-bottom: 1.5rem;
+  }
 
-        // Soumission du formulaire
-        setTimeout(() => {
-          form.submit();
-        }, 300);
-      }
-    });
+  .modal-content-container .card-body {
+    padding: 2rem;
+  }
 
-    // Fonctions utilitaires
-    function updateCategories() {
-      const selectedType = document.querySelector('input[name="type"]:checked')?.value;
-      const categoryList = selectedType ? categories[selectedType] : [];
+  /* Better button styling */
+  .modal-content-container .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 8px;
+  }
 
-      // Vider les options existantes
-      categorySelect.innerHTML = '<option value="">Sélectionner une catégorie...</option>';
+  /* Enhanced form controls */
+  .modal-content-container .form-control,
+  .modal-content-container .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+  }
 
-      // Ajouter les catégories
-      categoryList.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
+  .modal-content-container .form-control:focus,
+  .modal-content-container .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
 
-        // Sélection de la catégorie si elle existe dans formData
-        <% if (typeof formData !== 'undefined' && formData.category) { %>
-          if (cat === '<%= formData.category %>') {
-            option.selected = true;
-          }
-        <% } %>
-
-        categorySelect.appendChild(option);
-      });
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .modal-content-container {
+      margin: 10px;
+      max-height: 95vh;
+      max-width: 95vw;
     }
 
-    function updateCharCount() {
-      const count = descriptionTextarea.value.length;
-      charCount.textContent = count;
-      charCount.className = count > 230 ? 'text-warning' : count > 250 ? 'text-danger' : 'text-muted';
+    .modal-content-container .card-body {
+      padding: 1.5rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .modal-content-container {
+      max-width: 98vw;
+      margin: 5px;
     }
 
-    function updateFormColors() {
-      const selectedType = document.querySelector('input[name="type"]:checked')?.value;
-      const cardHeader = document.querySelector('.card-header');
-
-      if (selectedType === 'income') {
-        cardHeader.className = 'card-header bg-success text-white';
-      } else {
-        cardHeader.className = 'card-header bg-danger text-white';
-      }
+    .modal-content-container .card-body {
+      padding: 1rem;
     }
-
-    function updatePreview() {
-      const type = document.querySelector('input[name="type"]:checked')?.value;
-      const amount = document.getElementById('amount').value;
-      const category = newCategoryToggle.checked ? newCategoryInput.value : categorySelect.value;
-      const description = descriptionTextarea.value;
-      const date = document.getElementById('date').value;
-
-      if (!type || !amount || !category) {
-        return;
-      }
-
-      const formattedAmount = new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: 'EUR'
-      }).format(parseFloat(amount));
-
-      const formattedDate = date ? new Date(date).toLocaleDateString('fr-FR') : 'Aujourd\'hui';
-      const typeLabel = type === 'income' ? 'Revenu' : 'Dépense';
-      const typeColor = type === 'income' ? 'success' : 'danger';
-      const typeIcon = type === 'income' ? 'arrow-up' : 'arrow-down';
-
-      document.getElementById('previewContent').innerHTML = `
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <span class="badge bg-${typeColor} mb-2">
-              <i class="fas fa-${typeIcon} me-1"></i>
-              ${typeLabel}
-            </span>
-            <h6 class="mb-1">${category}</h6>
-            ${description ? `<p class="text-muted small mb-0">${description}</p>` : ''}
-          </div>
-          <div class="text-end">
-            <h5 class="text-${typeColor} mb-0">
-              ${type === 'income' ? '+' : '-'}${formattedAmount}
-            </h5>
-            <small class="text-muted">${formattedDate}</small>
-          </div>
-        </div>
-      `;
-    }
-
-    function validateForm() {
-      let isValid = true;
-      const errors = [];
-
-      // Validation du type
-      const type = document.querySelector('input[name="type"]:checked');
-      if (!type) {
-        errors.push('Le type de transaction est requis');
-        isValid = false;
-      }
-
-      // Validation du montant
-      const amount = parseFloat(document.getElementById('amount').value);
-      if (!amount || amount < 0.01 || amount > 999999.99) {
-        errors.push('Le montant doit être entre 0,01€ et 999 999,99€');
-        isValid = false;
-      }
-
-      // Validation de la catégorie
-      const category = newCategoryToggle.checked ? newCategoryInput.value : categorySelect.value;
-      if (!category || category.trim().length === 0) {
-        errors.push('La catégorie est requise');
-        isValid = false;
-      }
-
-      // Affichage des erreurs
-      if (!isValid) {
-        showErrors(errors);
-      }
-
-      return isValid;
-    }
-
-    function showErrors(errors) {
-      // Suppression des anciennes erreurs
-      const oldAlert = document.querySelector('.alert-danger');
-      if (oldAlert) {
-        oldAlert.remove();
-      }
-
-      // Création de la nouvelle alerte
-      const alert = document.createElement('div');
-      alert.className = 'alert alert-danger';
-      alert.innerHTML = `
-        <h6><i class="fas fa-exclamation-triangle me-2"></i>Erreurs de validation :</h6>
-        <ul class="mb-0">
-          ${errors.map(error => `<li>${error}</li>`).join('')}
-        </ul>
-      `;
-
-      // Insertion au début du card-body
-      const cardBody = document.querySelector('.card-body');
-      cardBody.insertBefore(alert, cardBody.firstChild);
-
-      // Scroll vers le haut
-      alert.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Initialisation des couleurs
-    updateFormColors();
-  });
-</script>
+  }
+</style>
 
 <%- include('../layouts/footer') %>

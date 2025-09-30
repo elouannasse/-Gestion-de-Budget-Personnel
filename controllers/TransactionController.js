@@ -91,6 +91,8 @@ class TransactionController {
         orderBy,
         orderDir,
         title: "Mes Transactions",
+        success: req.flash("success"),
+        error: req.flash("error"),
       });
     } catch (error) {
       console.error("Erreur lors de la récupération des transactions:", error);
@@ -106,17 +108,38 @@ class TransactionController {
         return res.redirect("/auth/login");
       }
 
-      const userId = req.session.user.id;
-      const categories = await this.getCategories(userId);
+      // Catégories par défaut
+      const categories = {
+        income: [
+          "Salaire",
+          "Freelance",
+          "Investissement",
+          "Bonus",
+          "Vente",
+          "Autre",
+        ],
+        expense: [
+          "Alimentation",
+          "Transport",
+          "Logement",
+          "Loisirs",
+          "Santé",
+          "Shopping",
+          "Factures",
+          "Autre",
+        ],
+      };
 
       res.render("transactions/create", {
         categories,
         title: "Nouvelle Transaction",
+        formData: {},
+        errors: [],
       });
     } catch (error) {
-      console.error("Erreur lors du chargement du formulaire:", error);
+      console.error("❌ Erreur:", error);
       req.flash("error", "Erreur lors du chargement du formulaire");
-      res.redirect("/transactions");
+      res.redirect("/dashboard");
     }
   }
 
@@ -284,37 +307,15 @@ class TransactionController {
       });
 
       if (!transaction) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Transaction introuvable" });
+        req.flash("error", "Transaction introuvable");
+        return res.redirect("/transactions");
       }
 
       await transaction.destroy();
-
-      if (
-        req.headers.accept &&
-        req.headers.accept.includes("application/json")
-      ) {
-        return res.json({
-          success: true,
-          message: "Transaction supprimée avec succès",
-        });
-      }
-
       req.flash("success", "Transaction supprimée avec succès !");
       res.redirect("/transactions");
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
-
-      if (
-        req.headers.accept &&
-        req.headers.accept.includes("application/json")
-      ) {
-        return res
-          .status(500)
-          .json({ success: false, message: "Erreur lors de la suppression" });
-      }
-
       req.flash("error", "Erreur lors de la suppression de la transaction");
       res.redirect("/transactions");
     }

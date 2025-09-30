@@ -10,38 +10,77 @@ const { addUserToLocals } = require("./middleware/auth");
 
 const app = express();
 
-// Security middleware
+// Security middleware avec configuration adaptée selon l'environnement
+const isDevelopment =
+  process.env.NODE_ENV === "development" ||
+  process.env.NODE_ENV !== "production";
+
+const cspConfig = {
+  directives: {
+    defaultSrc: ["'self'"],
+    styleSrc: [
+      "'self'",
+      "'unsafe-inline'",
+      "https://cdn.jsdelivr.net",
+      "https://cdnjs.cloudflare.com",
+      "https://fonts.googleapis.com",
+    ],
+    scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+    fontSrc: [
+      "'self'",
+      "https://fonts.gstatic.com",
+      "https://cdnjs.cloudflare.com",
+    ],
+    imgSrc: ["'self'", "data:", "https:"],
+    // Configuration connectSrc adaptée selon l'environnement
+    connectSrc: [
+      "'self'",
+      "https://cdn.jsdelivr.net",
+      "https://cdnjs.cloudflare.com",
+      // En développement, autoriser tous les domaines jsdelivr pour source maps
+      ...(isDevelopment
+        ? ["https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/", "data:", "blob:"]
+        : []),
+    ],
+    manifestSrc: ["'self'"],
+    workerSrc: ["'self'", "blob:"],
+    baseUri: ["'self'"],
+    objectSrc: ["'none'"],
+    frameSrc: ["'self'"],
+  },
+};
+
+// Configuration spécifique pour le développement
+if (isDevelopment) {
+  console.log(" Mode développement: CSP étendue pour les source maps");
+  // Permettre les source maps et debugging
+  cspConfig.directives.scriptSrc.push("'unsafe-eval'"); // Pour les dev tools
+}
+
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "https://cdn.jsdelivr.net",
-          "https://cdnjs.cloudflare.com",
-          "https://fonts.googleapis.com",
-        ],
-        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
-        fontSrc: [
-          "'self'",
-          "https://fonts.gstatic.com",
-          "https://cdnjs.cloudflare.com",
-        ],
-        imgSrc: ["'self'", "data:", "https:"],
-      },
-    },
+    contentSecurityPolicy: cspConfig,
   })
 );
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+// Rate limiting adaptatif selon l'environnement
+const limiterConfig = {
+  windowMs: isDevelopment ? 1 * 60 * 1000 : 15 * 60 * 1000, // 1 min en dev, 15 min en prod
+  max: isDevelopment ? 1000 : 100, // 1000 req/min en dev, 100 req/15min en prod
   message: "Trop de requêtes depuis cette IP, veuillez réessayer plus tard.",
-});
-app.use(limiter);
+  standardHeaders: true,
+  legacyHeaders: false,
+};
+
+const limiter = rateLimit(limiterConfig);
+
+// Appliquer le rate limiting seulement en production ou si explicitement demandé
+if (!isDevelopment || process.env.ENABLE_RATE_LIMIT === "true") {
+  app.use(limiter);
+  console.log("  Rate limiting activé:", limiterConfig);
+} else {
+  console.log(" Rate limiting désactivé en mode développement");
+}
 
 // Session configuration
 const sessionStore = new SequelizeStore({
@@ -115,6 +154,8 @@ app.use("/auth", require("./routes/auth"));
 app.use("/dashboard", require("./routes/dashboard"));
 app.use("/transactions", require("./routes/transactions"));
 
+
+
 // Test routes
 app.get("/test", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "test-routes.html"));
@@ -182,11 +223,9 @@ const PORT = process.env.PORT || 3000;
 
 async function startServer() {
   try {
-    // Sync database
     await sequelize.authenticate();
     console.log("Database connection established successfully.");
 
-    // Create session table
     await sessionStore.sync({ alter: true }).catch((err) => {
       console.error("Session table sync error:", err);
     });

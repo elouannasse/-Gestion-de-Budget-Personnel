@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const router = express.Router();
 const TransactionController = require("../controllers/TransactionController");
 const { body } = require("express-validator");
@@ -50,7 +51,7 @@ const transactionValidation = [
   }),
 ];
 
-// Routes principales
+// Main CRUD routes using server-side rendering only
 router.get("/", requireAuth, TransactionController.index);
 router.get("/create", requireAuth, TransactionController.create);
 router.post(

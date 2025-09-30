@@ -21,14 +21,31 @@
             <i class="fas fa-download me-1"></i>
             Export CSV
           </a>
-          <a href="/transactions/create" class="btn btn-primary">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTransactionModal">
             <i class="fas fa-plus me-1"></i>
             Nouvelle Transaction
-          </a>
+          </button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Messages Flash -->
+  <% if (typeof success !== 'undefined' && success.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="fas fa-check-circle me-2"></i>
+      <%= success %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  <% } %>
+
+  <% if (typeof error !== 'undefined' && error.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="fas fa-exclamation-circle me-2"></i>
+      <%= error %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  <% } %>
 
   <!-- Statistiques -->
   <div class="row mb-4">
@@ -375,6 +392,120 @@
   </div>
 </div>
 
+<!-- Modal de création de transaction -->
+<div class="modal fade" id="createTransactionModal" tabindex="-1" aria-labelledby="createTransactionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="createTransactionModalLabel">
+          <i class="fas fa-plus-circle me-2"></i>
+          Nouvelle Transaction
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="/transactions" id="createTransactionForm">
+        <div class="modal-body">
+          <div class="row">
+            <!-- Type de transaction -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">
+                <i class="fas fa-tag me-1"></i>
+                Type de transaction *
+              </label>
+              <div class="mt-2">
+                <div class="form-check form-check-inline p-3 border rounded me-3">
+                  <input class="form-check-input" type="radio" name="type" id="modalIncome" value="income" required>
+                  <label class="form-check-label text-success fw-bold" for="modalIncome">
+                    <i class="fas fa-arrow-up"></i> Revenus
+                  </label>
+                </div>
+                <div class="form-check form-check-inline p-3 border rounded">
+                  <input class="form-check-input" type="radio" name="type" id="modalExpense" value="expense" required>
+                  <label class="form-check-label text-danger fw-bold" for="modalExpense">
+                    <i class="fas fa-arrow-down"></i> Dépenses
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Montant -->
+            <div class="col-md-6 mb-3">
+              <label for="modalAmount" class="form-label fw-bold">
+                <i class="fas fa-euro-sign me-1"></i>
+                Montant (€) *
+              </label>
+              <input type="number" step="0.01" min="0.01" max="999999.99" 
+                     class="form-control form-control-lg" 
+                     name="amount" id="modalAmount" 
+                     placeholder="0.00" required>
+            </div>
+          </div>
+
+          <!-- Catégorie -->
+          <div class="mb-3">
+            <label for="modalCategory" class="form-label fw-bold">
+              <i class="fas fa-folder me-1"></i>
+              Catégorie *
+            </label>
+            <select class="form-select form-select-lg" name="category" id="modalCategory" required>
+              <option value="">-- Sélectionner une catégorie --</option>
+              <optgroup label="💰 Revenus" id="modalIncomeCategories" style="display: none">
+                <option value="Salaire">💼 Salaire</option>
+                <option value="Freelance">💻 Freelance</option>
+                <option value="Investissement">📈 Investissement</option>
+                <option value="Bonus">🎁 Bonus</option>
+                <option value="Vente">🏪 Vente</option>
+                <option value="Autre">➕ Autre</option>
+              </optgroup>
+              <optgroup label="💸 Dépenses" id="modalExpenseCategories" style="display: none">
+                <option value="Alimentation">🍔 Alimentation</option>
+                <option value="Transport">🚗 Transport</option>
+                <option value="Logement">🏠 Logement</option>
+                <option value="Loisirs">🎮 Loisirs</option>
+                <option value="Santé">🏥 Santé</option>
+                <option value="Shopping">🛍️ Shopping</option>
+                <option value="Factures">📄 Factures</option>
+                <option value="Autre">➕ Autre</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            <label for="modalDescription" class="form-label fw-bold">
+              <i class="fas fa-sticky-note me-1"></i>
+              Description (optionnel)
+            </label>
+            <textarea class="form-control" name="description" id="modalDescription" rows="3" 
+                      placeholder="Détails de la transaction..." maxlength="255"></textarea>
+          </div>
+
+          <!-- Date -->
+          <div class="mb-3">
+            <label for="modalDate" class="form-label fw-bold">
+              <i class="fas fa-calendar me-1"></i>
+              Date *
+            </label>
+            <input type="date" class="form-control form-control-lg" 
+                   name="date" id="modalDate" 
+                   required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-1"></i>
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fas fa-save me-1"></i>
+            Enregistrer la transaction
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Scripts JavaScript -->
 <script>
 let transactionToDelete = null;
@@ -497,6 +628,52 @@ function createToastContainer() {
   document.body.appendChild(container);
   return container;
 }
+
+// Gestion du modal de création de transaction
+document.addEventListener('DOMContentLoaded', function() {
+  const typeInputs = document.querySelectorAll('input[name="type"]');
+  const incomeCategories = document.getElementById('modalIncomeCategories');
+  const expenseCategories = document.getElementById('modalExpenseCategories');
+  const categorySelect = document.getElementById('modalCategory');
+  const createModal = document.getElementById('createTransactionModal');
+  const dateInput = document.getElementById('modalDate');
+
+  // Définir la date d'aujourd'hui par défaut
+  if (dateInput) {
+    dateInput.value = new Date().toISOString().split('T')[0];
+  }
+
+  // Gestion du changement de type pour afficher les bonnes catégories
+  typeInputs.forEach(input => {
+    input.addEventListener('change', function() {
+      categorySelect.value = '';
+      if (this.value === 'income') {
+        incomeCategories.style.display = 'block';
+        expenseCategories.style.display = 'none';
+      } else {
+        incomeCategories.style.display = 'none';
+        expenseCategories.style.display = 'block';
+      }
+    });
+  });
+
+  // Réinitialiser le formulaire quand le modal se ferme
+  createModal.addEventListener('hidden.bs.modal', function() {
+    document.getElementById('createTransactionForm').reset();
+    incomeCategories.style.display = 'none';
+    expenseCategories.style.display = 'none';
+    // Remettre la date d'aujourd'hui
+    document.getElementById('modalDate').value = new Date().toISOString().split('T')[0];
+  });
+
+  // Animation du modal à l'ouverture
+  createModal.addEventListener('show.bs.modal', function() {
+    // Focus sur le premier champ radio
+    setTimeout(() => {
+      document.getElementById('modalIncome').focus();
+    }, 300);
+  });
+});
 </script>
 
 <%- include('../layouts/footer') %>

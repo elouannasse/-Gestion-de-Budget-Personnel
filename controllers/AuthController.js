@@ -248,7 +248,7 @@ class AuthController {
       );
 
       if (emailResult.success) {
-        console.log("✅ Reset email sent successfully to:", user.email);
+        console.log(" Reset email sent successfully to:", user.email);
 
         return res.render("auth/forgot-password", {
           title: "Mot de passe oublié",
