@@ -1,0 +1,123 @@
+<%- include('../layouts/header', { title: 'Nouvel objectif d\'épargne' }) %>
+
+<div class="container main-content">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card animate-fade-in shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-piggy-bank me-2"></i>
+            Nouvel objectif d'épargne
+          </h5>
+        </div>
+
+        <div class="card-body">
+          <% if (locals.error && error.length > 0) { %>
+          <div class="alert alert-danger"><%= error %></div>
+          <% } %>
+
+          <form action="/savings" method="POST" id="savingsGoalForm">
+            <div class="mb-3">
+              <label for="title" class="form-label">Titre de l'objectif</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                required
+                placeholder="Ex: Vacances d'été, Nouvel ordinateur..."
+                minlength="2"
+                maxlength="200"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="targetAmount" class="form-label"
+                >Montant cible (€)</label
+              >
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-euro-sign"></i
+                ></span>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="targetAmount"
+                  name="targetAmount"
+                  required
+                  step="0.01"
+                  min="0.01"
+                  placeholder="Montant à atteindre"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="deadline" class="form-label">Date limite</label>
+              <input
+                type="date"
+                class="form-control"
+                id="deadline"
+                name="deadline"
+                required
+                min="<%= new Date().toISOString().split('T')[0] %>"
+              />
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>
+                Créer l'objectif d'épargne
+              </button>
+              <a href="/dashboard" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Retour au tableau de bord
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Définir la date minimale au jour actuel
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0];
+    document.getElementById("deadline").min = formattedDate;
+
+    // Validation du formulaire côté client
+    const form = document.getElementById("savingsGoalForm");
+    form.addEventListener("submit", function (e) {
+      let isValid = true;
+      const title = document.getElementById("title").value.trim();
+      const targetAmount = parseFloat(
+        document.getElementById("targetAmount").value
+      );
+      const deadline = document.getElementById("deadline").value;
+
+      if (title.length < 2 || title.length > 200) {
+        isValid = false;
+        alert("Le titre doit comporter entre 2 et 200 caractères");
+      }
+
+      if (isNaN(targetAmount) || targetAmount <= 0) {
+        isValid = false;
+        alert("Le montant cible doit être un nombre positif supérieur à 0");
+      }
+
+      if (!deadline) {
+        isValid = false;
+        alert("Veuillez choisir une date limite");
+      }
+
+      if (!isValid) {
+        e.preventDefault();
+      }
+    });
+  });
+</script>
+
+<%- include('../layouts/footer') %>

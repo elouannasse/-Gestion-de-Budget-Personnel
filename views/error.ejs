@@ -42,14 +42,47 @@
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         padding: 3rem;
         text-align: center;
-        max-width: 500px;
+        max-width: 650px;
         width: 100%;
       }
 
       .error-icon {
         font-size: 4rem;
-        color: #dc3545;
         margin-bottom: 1.5rem;
+      }
+
+      .error-icon.error-500 {
+        color: #dc3545;
+      }
+
+      .error-icon.error-404 {
+        color: #ffc107;
+      }
+
+      .error-icon.error-403 {
+        color: #fd7e14;
+      }
+
+      .error-icon.error-other {
+        color: #6c757d;
+      }
+
+      .error-code {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: -webkit-linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+      }
+
+      .error-details {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        text-align: left;
+        border-left: 4px solid #667eea;
       }
 
       .btn-home {
@@ -70,19 +103,117 @@
         box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         color: white;
       }
+
+      .btn-secondary {
+        background: #6c757d;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+        margin-left: 0.5rem;
+      }
+
+      .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+        color: white;
+      }
+
+      .suggested-links {
+        margin-top: 2rem;
+        text-align: left;
+      }
+
+      .suggested-links h5 {
+        margin-bottom: 1rem;
+        color: #495057;
+      }
+
+      .suggested-links ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .suggested-links li {
+        margin-bottom: 0.5rem;
+      }
+
+      .suggested-links a {
+        color: #667eea;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      .suggested-links a:hover {
+        color: #764ba2;
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
     <div class="error-card">
-      <i class="fas fa-exclamation-triangle error-icon"></i>
-      <h1>Oups!</h1>
+      <% let iconClass = "error-other"; let errorIcon = "fas
+      fa-exclamation-triangle"; if (status) { if (status === 404) { iconClass =
+      "error-404"; errorIcon = "fas fa-map-signs"; } else if (status === 500) {
+      iconClass = "error-500"; errorIcon = "fas fa-exclamation-circle"; } else
+      if (status === 403) { iconClass = "error-403"; errorIcon = "fas fa-lock";
+      } } %>
+      <i class="<%= errorIcon %> error-icon <%= iconClass %>"></i>
+
+      <% if (status) { %>
+      <div class="error-code">Error <%= status %></div>
+      <% } %>
+
+      <h1><%= title || 'Erreur' %></h1>
       <p class="lead">
         <%= message || 'Une erreur inattendue s\'est produite.' %>
       </p>
-      <a href="/dashboard" class="btn-home">
-        <i class="fas fa-home me-2"></i>
-        Retour au tableau de bord
-      </a>
+
+      <% if (error && process.env.NODE_ENV !== 'production') { %>
+      <div class="error-details">
+        <h6>Détails de l'erreur (uniquement visible en mode développement):</h6>
+        <p class="mb-0"><%= error.stack || error %></p>
+      </div>
+      <% } %> <% if (url) { %>
+      <p class="text-muted mb-0">URL demandée: <%= url %></p>
+      <% } %>
+
+      <div class="mt-4">
+        <a href="/" class="btn-home">
+          <i class="fas fa-home me-2"></i>
+          Retour à l'accueil
+        </a>
+
+        <a href="javascript:history.back()" class="btn-secondary">
+          <i class="fas fa-arrow-left me-2"></i>
+          Page précédente
+        </a>
+      </div>
+
+      <div class="suggested-links">
+        <h5>Liens suggérés:</h5>
+        <ul>
+          <li>
+            <i class="fas fa-tachometer-alt me-2"></i
+            ><a href="/dashboard">Tableau de bord</a>
+          </li>
+          <li>
+            <i class="fas fa-exchange-alt me-2"></i
+            ><a href="/transactions">Transactions</a>
+          </li>
+          <li>
+            <i class="fas fa-chart-pie me-2"></i><a href="/budgets">Budgets</a>
+          </li>
+          <li>
+            <i class="fas fa-user me-2"></i><a href="/profile-direct">Profil</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </body>
 </html>

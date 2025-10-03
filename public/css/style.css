@@ -50,6 +50,90 @@
   }
 }
 
+/* Modal Budget Styling */
+#createBudgetModal .modal-content {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+#createBudgetModal .modal-header {
+  background: linear-gradient(135deg, #db5806ff 0%, #e41916ff 100%);
+  border: none;
+  padding: 20px 30px;
+}
+
+#createBudgetModal .modal-title {
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+#createBudgetModal .modal-body {
+  padding: 30px;
+  background: #f8f9fa;
+}
+
+#createBudgetModal .form-label {
+  font-weight: 600;
+  color: #2C3E50;
+  margin-bottom: 8px;
+}
+
+#createBudgetModal .form-control,
+#createBudgetModal .form-select {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 12px 15px;
+  transition: all 0.3s ease;
+}
+
+#createBudgetModal .form-control:focus,
+#createBudgetModal .form-select:focus {
+  border-color: #db5806ff;
+  box-shadow: 0 0 0 0.2rem rgba(219, 88, 6, 0.25);
+  background-color: #fff;
+}
+
+#createBudgetModal .input-group-text {
+  background: #db5806ff;
+  color: white;
+  border: 2px solid #db5806ff;
+  font-weight: 600;
+}
+
+#createBudgetModal .form-check-input:checked {
+  background-color: #db5806ff;
+  border-color: #db5806ff;
+}
+
+#createBudgetModal .modal-footer {
+  background: #f8f9fa;
+  border: none;
+  padding: 20px 30px;
+}
+
+#createBudgetModal .btn-primary {
+  background: linear-gradient(135deg, #db5806ff 0%, #e41916ff 100%);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+#createBudgetModal .btn-primary:hover {
+  background: linear-gradient(135deg, #eb7f13ff 0%, #db5806ff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(219, 88, 6, 0.4);
+}
+
+#createBudgetModal .btn-secondary {
+  border-radius: 10px;
+  padding: 12px 30px;
+  font-weight: 600;
+}
+
 /* Modal Enhancements */
 .modal-header.bg-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;

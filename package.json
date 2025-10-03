@@ -7,7 +7,9 @@
     "init-db": "node scripts/initDb.js",
     "create-test-user": "node scripts/createTestUser.js",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start-ssr": "node app-ssr.js",
+    "dev-ssr": "nodemon app-ssr.js"
   },
   "keywords": [],
   "author": "",

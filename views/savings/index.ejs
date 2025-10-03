@@ -1,0 +1,316 @@
+<%- include('../layouts/header', { title: 'Mes objectifs d\'épargne' }) %>
+
+<div class="container main-content">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h1 class="h3 mb-0">
+        <i class="fas fa-piggy-bank me-2 text-primary"></i>
+        Mes objectifs d'épargne
+      </h1>
+      <p class="text-muted">
+        Suivez vos objectifs d'épargne et votre progression
+      </p>
+    </div>
+    <div class="col-md-6 text-md-end mt-3 mt-md-0">
+      <a href="/savings/create" class="btn btn-primary">
+        <i class="fas fa-plus-circle me-2"></i>
+        Nouvel objectif d'épargne
+      </a>
+    </div>
+  </div>
+
+  <% if (locals.success && success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= success %>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  <% } %> <% if (locals.error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= error %>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  <% } %>
+
+  <div class="row">
+    <% if (locals.savingsGoals && savingsGoals.length > 0) { %> <%
+    savingsGoals.forEach(goal => { const progress = (goal.currentAmount /
+    goal.targetAmount) * 100; const progressClass = progress < 30 ? 'bg-danger'
+    : progress < 70 ? 'bg-warning' : 'bg-success'; const daysLeft =
+    Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24));
+    %>
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0"><%= goal.title %></h5>
+          <div class="dropdown">
+            <button
+              class="btn btn-sm btn-light"
+              type="button"
+              id="dropdownMenuButton<%= goal.id %>"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="dropdownMenuButton<%= goal.id %>"
+            >
+              <li>
+                <a class="dropdown-item" href="/savings/<%= goal.id %>/edit">
+                  <i class="fas fa-edit me-2"></i> Modifier
+                </a>
+              </li>
+              <li>
+                <form
+                  action="/savings/<%= goal.id %>?_method=DELETE"
+                  method="POST"
+                  class="d-inline delete-form"
+                  data-title="<%= goal.title %>"
+                >
+                  <button type="submit" class="dropdown-item text-danger">
+                    <i class="fas fa-trash me-2"></i> Supprimer
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span>Progression</span>
+              <span class="fw-bold"><%= progress.toFixed(1) %>%</span>
+            </div>
+            <div class="progress" style="height: 10px">
+              <div
+                class="progress-bar <%= progressClass %>"
+                role="progressbar"
+                style="width: <%= progress %>%"
+                aria-valuenow="<%= progress %>"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              ></div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-6">
+              <div class="text-muted small">Montant actuel</div>
+              <div class="fw-bold text-success">
+                €<%= parseFloat(goal.currentAmount).toFixed(2) %>
+              </div>
+            </div>
+            <div class="col-6 text-end">
+              <div class="text-muted small">Objectif</div>
+              <div class="fw-bold">
+                €<%= parseFloat(goal.targetAmount).toFixed(2) %>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <span
+              class="badge <%= daysLeft < 0 ? 'bg-danger' : daysLeft < 7 ? 'bg-warning' : 'bg-info' %>"
+            >
+              <i class="far fa-calendar-alt me-1"></i>
+              <%= daysLeft < 0 ? 'Expiré' : daysLeft === 0 ? 'Aujourd\'hui' :
+              `${daysLeft} jours restants` %>
+            </span>
+            <span class="text-muted small"
+              >Échéance: <%= new Date(goal.deadline).toLocaleDateString()
+              %></span
+            >
+          </div>
+        </div>
+        <div class="card-footer bg-white">
+          <button
+            class="btn btn-sm btn-outline-primary update-progress-btn"
+            data-bs-toggle="modal"
+            data-bs-target="#updateProgressModal"
+            data-id="<%= goal.id %>"
+            data-title="<%= goal.title %>"
+            data-current="<%= goal.currentAmount %>"
+            data-target="<%= goal.targetAmount %>"
+          >
+            <i class="fas fa-edit me-1"></i>
+            Mettre à jour le montant
+          </button>
+        </div>
+      </div>
+    </div>
+    <% }); %> <% } else { %>
+    <div class="col-12">
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Vous n'avez pas encore d'objectif d'épargne. Créez votre premier
+        objectif !
+      </div>
+      <div class="text-center py-5">
+        <img
+          src="/assets/savings-empty.svg"
+          alt="Aucun objectif d'épargne"
+          style="max-width: 250px; opacity: 0.6"
+          class="mb-4"
+        />
+        <h4>Commencez à épargner dès aujourd'hui</h4>
+        <p class="text-muted">
+          Définissez un objectif et suivez votre progression
+        </p>
+        <a href="/savings/create" class="btn btn-primary btn-lg mt-3">
+          <i class="fas fa-plus-circle me-2"></i>
+          Créer mon premier objectif
+        </a>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Modal pour mettre à jour le montant -->
+<div
+  class="modal fade"
+  id="updateProgressModal"
+  tabindex="-1"
+  aria-labelledby="updateProgressModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateProgressModalLabel">
+          Mettre à jour le montant
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form id="updateProgressForm" method="POST">
+        <div class="modal-body">
+          <input type="hidden" name="_method" value="PUT" />
+          <div class="mb-3">
+            <label for="currentAmount" class="form-label">Montant actuel</label>
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-euro-sign"></i
+              ></span>
+              <input
+                type="number"
+                class="form-control"
+                id="currentAmount"
+                name="currentAmount"
+                required
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+          <div class="progress mb-3" style="height: 20px">
+            <div
+              class="progress-bar"
+              id="progressBar"
+              role="progressbar"
+              aria-valuenow="0"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            ></div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>0%</span>
+            <span id="progressPercentage">0%</span>
+            <span>100%</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Gestion des boutons de mise à jour du montant
+    const updateButtons = document.querySelectorAll(".update-progress-btn");
+    const progressBar = document.getElementById("progressBar");
+    const progressPercentage = document.getElementById("progressPercentage");
+    const currentAmountInput = document.getElementById("currentAmount");
+    const updateForm = document.getElementById("updateProgressForm");
+
+    updateButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const id = this.dataset.id;
+        const title = this.dataset.title;
+        const currentAmount = parseFloat(this.dataset.current);
+        const targetAmount = parseFloat(this.dataset.target);
+
+        document.getElementById(
+          "updateProgressModalLabel"
+        ).textContent = `Mettre à jour: ${title}`;
+        currentAmountInput.value = currentAmount;
+        currentAmountInput.max = targetAmount;
+        updateForm.action = `/savings/${id}?_method=PUT`;
+
+        updateProgress(currentAmount, targetAmount);
+
+        currentAmountInput.addEventListener("input", function () {
+          updateProgress(parseFloat(this.value), targetAmount);
+        });
+      });
+    });
+
+    function updateProgress(current, target) {
+      const progress = (current / target) * 100;
+      const formattedProgress = Math.min(100, Math.max(0, progress)).toFixed(1);
+
+      progressBar.style.width = `${formattedProgress}%`;
+      progressPercentage.textContent = `${formattedProgress}%`;
+
+      if (progress < 30) {
+        progressBar.className = "progress-bar bg-danger";
+      } else if (progress < 70) {
+        progressBar.className = "progress-bar bg-warning";
+      } else {
+        progressBar.className = "progress-bar bg-success";
+      }
+    }
+
+    // Confirmation de suppression
+    const deleteForms = document.querySelectorAll(".delete-form");
+    deleteForms.forEach((form) => {
+      form.addEventListener("submit", function (e) {
+        const title = this.dataset.title;
+        if (
+          !confirm(`Êtes-vous sûr de vouloir supprimer l'objectif "${title}" ?`)
+        ) {
+          e.preventDefault();
+        }
+      });
+    });
+  });
+</script>
+
+<%- include('../layouts/footer') %>

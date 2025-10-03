@@ -130,7 +130,7 @@ class TransactionController {
         ],
       };
 
-      res.render("transactions/create", {
+      res.render("transactions/create-enhanced", {
         categories,
         title: "Nouvelle Transaction",
         formData: {},
@@ -149,7 +149,7 @@ class TransactionController {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         const categories = await this.getCategories(req.session.user.id);
-        return res.render("transactions/create", {
+        return res.render("transactions/create-enhanced", {
           categories,
           errors: errors.array(),
           formData: req.body,

@@ -383,19 +383,182 @@
                 <i class="fas fa-list me-2"></i>
                 Mes Transactions
               </a>
-              <a href="/budgets/create" class="btn btn-outline-primary btn-lg">
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-lg"
+                data-bs-toggle="modal"
+                data-bs-target="#createBudgetModal"
+              >
                 <i class="fas fa-chart-pie me-2"></i>
                 Créer un budget
+              </button>
+              <a href="/budgets" class="btn btn-outline-warning btn-lg">
+                <i class="fas fa-wallet me-2"></i>
+                Gérer mes budgets
               </a>
-              <a href="/savings/create" class="btn btn-success btn-lg">
-                <i class="fas fa-target me-2"></i>
+              <button
+                type="button"
+                class="btn btn-success btn-lg"
+                data-bs-toggle="modal"
+                data-bs-target="#createSavingsGoalModal"
+              >
+                <i class="fas fa-piggy-bank me-2"></i>
                 Nouvel objectif d'épargne
-              </a>
+              </button>
               <a href="/reports" class="btn btn-outline-info btn-lg">
                 <i class="fas fa-chart-bar me-2"></i>
                 Voir les rapports
               </a>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Créer un Budget -->
+    <div
+      class="modal fade"
+      id="createBudgetModal"
+      tabindex="-1"
+      aria-labelledby="createBudgetModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="createBudgetModalLabel">
+              <i class="fas fa-wallet me-2"></i>
+              Créer un nouveau budget
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="createBudgetForm" method="POST" action="/budgets">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="budgetCategory" class="form-label">
+                      <i class="fas fa-list me-1"></i>
+                      Catégorie *
+                    </label>
+                    <select
+                      class="form-select"
+                      id="budgetCategory"
+                      name="category"
+                      required
+                    >
+                      <option value="">Sélectionner une catégorie</option>
+                      <option value="alimentation">🍽️ Alimentation</option>
+                      <option value="transport">🚗 Transport</option>
+                      <option value="logement">🏠 Logement</option>
+                      <option value="loisirs">🎮 Loisirs</option>
+                      <option value="sante">🏥 Santé</option>
+                      <option value="education">📚 Éducation</option>
+                      <option value="vetements">👕 Vêtements</option>
+                      <option value="autres">📦 Autres</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="budgetLimitAmount" class="form-label">
+                      <i class="fas fa-euro-sign me-1"></i>
+                      Montant limite *
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text">€</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="budgetLimitAmount"
+                        name="limitAmount"
+                        step="0.01"
+                        min="0"
+                        required
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="budgetMonth" class="form-label">
+                      <i class="fas fa-calendar me-1"></i>
+                      Mois *
+                    </label>
+                    <select
+                      class="form-select"
+                      id="budgetMonth"
+                      name="month"
+                      required
+                    >
+                      <option value="">Sélectionner un mois</option>
+                      <option value="1">Janvier</option>
+                      <option value="2">Février</option>
+                      <option value="3">Mars</option>
+                      <option value="4">Avril</option>
+                      <option value="5">Mai</option>
+                      <option value="6">Juin</option>
+                      <option value="7">Juillet</option>
+                      <option value="8">Août</option>
+                      <option value="9">Septembre</option>
+                      <option value="10">Octobre</option>
+                      <option value="11">Novembre</option>
+                      <option value="12">Décembre</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="budgetYear" class="form-label">
+                      <i class="fas fa-calendar-alt me-1"></i>
+                      Année *
+                    </label>
+                    <select
+                      class="form-select"
+                      id="budgetYear"
+                      name="year"
+                      required
+                    >
+                      <option value="">Sélectionner une année</option>
+                      <option value="2024">2024</option>
+                      <option value="2025">2025</option>
+                      <option value="2026">2026</option>
+                      <option value="2027">2027</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              <i class="fas fa-times me-1"></i>
+              Annuler
+            </button>
+            <button
+              type="submit"
+              form="createBudgetForm"
+              class="btn btn-primary"
+            >
+              <i class="fas fa-save me-1"></i>
+              Créer le budget
+            </button>
           </div>
         </div>
       </div>
@@ -449,6 +612,303 @@
 
       // Test général
       console.log("✅ Dashboard chargé à", new Date().toLocaleTimeString());
+
+      // Gestion du modal de création de budget
+      const createBudgetModal = document.getElementById("createBudgetModal");
+      const createBudgetForm = document.getElementById("createBudgetForm");
+
+      if (createBudgetModal && createBudgetForm) {
+        console.log("✅ Modal et formulaire trouvés");
+
+        // Soumission du formulaire
+        createBudgetForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          console.log("📝 Formulaire soumis");
+
+          // Récupérer les valeurs
+          const budgetCategory = document.getElementById("budgetCategory");
+          const budgetLimitAmount =
+            document.getElementById("budgetLimitAmount");
+          const budgetMonth = document.getElementById("budgetMonth");
+          const budgetYear = document.getElementById("budgetYear");
+
+          if (
+            !budgetCategory ||
+            !budgetLimitAmount ||
+            !budgetMonth ||
+            !budgetYear
+          ) {
+            console.error("❌ Éléments du formulaire non trouvés");
+            return;
+          }
+
+          const category = budgetCategory.value.trim();
+          const limitAmount = parseFloat(budgetLimitAmount.value);
+          const month = parseInt(budgetMonth.value);
+          const year = parseInt(budgetYear.value);
+
+          console.log("📋 Données du formulaire:", {
+            category,
+            limitAmount,
+            month,
+            year,
+          });
+
+          // Validation
+          if (!category || category === "") {
+            console.log("❌ Catégorie invalide");
+            budgetCategory.classList.add("is-invalid");
+            budgetCategory.focus();
+            return;
+          }
+
+          if (!limitAmount || limitAmount <= 0) {
+            console.log("❌ Montant limite invalide");
+            budgetLimitAmount.classList.add("is-invalid");
+            budgetLimitAmount.focus();
+            return;
+          }
+
+          if (!month || month < 1 || month > 12) {
+            console.log("❌ Mois invalide");
+            budgetMonth.classList.add("is-invalid");
+            budgetMonth.focus();
+            return;
+          }
+
+          if (!year || year < 2024) {
+            console.log("❌ Année invalide");
+            budgetYear.classList.add("is-invalid");
+            budgetYear.focus();
+            return;
+          }
+
+          // Bouton de soumission (dans le modal footer)
+          const submitBtn = document.querySelector(
+            'button[form="createBudgetForm"]'
+          );
+          if (!submitBtn) {
+            console.error("❌ Bouton de soumission non trouvé");
+            return;
+          }
+          console.log("✅ Bouton de soumission trouvé:", submitBtn);
+
+          const originalText = submitBtn.textContent;
+
+          // Animation de chargement
+          submitBtn.textContent = "Création...";
+          submitBtn.disabled = true;
+
+          // Préparer les données
+          const budgetData = {
+            category: category,
+            limitAmount: limitAmount,
+            month: month,
+            year: year,
+          };
+
+          console.log("📤 Envoi vers API:", budgetData);
+
+          // Envoyer à l'API
+          fetch("/budgets", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(budgetData),
+          })
+            .then(function (response) {
+              console.log("📡 Réponse reçue:", response.status);
+              return response.json();
+            })
+            .then(function (data) {
+              console.log("📥 Données de réponse:", data);
+
+              if (data.success) {
+                // Succès
+                submitBtn.textContent = "Budget créé !";
+                submitBtn.classList.remove("btn-primary");
+                submitBtn.classList.add("btn-success");
+
+                alert("✅ Budget créé avec succès !");
+
+                // Fermer le modal et recharger
+                setTimeout(function () {
+                  const modal = bootstrap.Modal.getInstance(createBudgetModal);
+                  if (modal) {
+                    modal.hide();
+                  }
+                  window.location.reload();
+                }, 1500);
+              } else {
+                // Erreur
+                submitBtn.textContent = "Erreur";
+                submitBtn.classList.remove("btn-primary");
+                submitBtn.classList.add("btn-danger");
+
+                alert("❌ Erreur: " + (data.message || "Erreur inconnue"));
+
+                // Réinitialiser le bouton
+                setTimeout(function () {
+                  submitBtn.textContent = originalText;
+                  submitBtn.disabled = false;
+                  submitBtn.classList.remove("btn-danger");
+                  submitBtn.classList.add("btn-primary");
+                }, 3000);
+              }
+            })
+            .catch(function (error) {
+              console.error("❌ Erreur réseau:", error);
+
+              submitBtn.textContent = "Erreur";
+              submitBtn.classList.remove("btn-primary");
+              submitBtn.classList.add("btn-danger");
+
+              alert("❌ Erreur de connexion");
+
+              // Réinitialiser le bouton
+              setTimeout(function () {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                submitBtn.classList.remove("btn-danger");
+                submitBtn.classList.add("btn-primary");
+              }, 3000);
+            });
+        });
+      } else {
+        console.error("❌ Modal ou formulaire non trouvé");
+      }
+
+      // Fonction pour afficher des notifications (simplifiée)
+      function showNotification(message, type) {
+        console.log("📢 Notification:", message, type);
+        alert(message);
+      }
+
+      // Initialiser la date minimale pour l'objectif d'épargne
+      const deadlineField = document.getElementById("deadline");
+      if (deadlineField) {
+        const today = new Date();
+        const formattedDate = today.toISOString().split("T")[0];
+        deadlineField.min = formattedDate;
+        deadlineField.value = formattedDate;
+      }
+
+      // Validation du formulaire d'objectif d'épargne
+      const savingsForm = document.getElementById("savingsGoalForm");
+      if (savingsForm) {
+        savingsForm.addEventListener("submit", function (e) {
+          let isValid = true;
+          const title = document.getElementById("title").value.trim();
+          const targetAmount = parseFloat(
+            document.getElementById("targetAmount").value
+          );
+          const deadline = document.getElementById("deadline").value;
+
+          if (title.length < 2 || title.length > 200) {
+            isValid = false;
+            alert("Le titre doit comporter entre 2 et 200 caractères");
+          }
+
+          if (isNaN(targetAmount) || targetAmount <= 0) {
+            isValid = false;
+            alert("Le montant cible doit être un nombre positif supérieur à 0");
+          }
+
+          if (!deadline) {
+            isValid = false;
+            alert("Veuillez choisir une date limite");
+          }
+
+          if (!isValid) {
+            e.preventDefault();
+          }
+        });
+      }
     </script>
+
+    <!-- Modal Objectif d'Épargne -->
+    <div
+      class="modal fade"
+      id="createSavingsGoalModal"
+      tabindex="-1"
+      aria-labelledby="createSavingsGoalModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="createSavingsGoalModalLabel">
+              <i class="fas fa-piggy-bank me-2"></i>
+              Nouvel objectif d'épargne
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form action="/savings" method="POST" id="savingsGoalForm">
+              <div class="mb-3">
+                <label for="title" class="form-label"
+                  >Titre de l'objectif</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  name="title"
+                  required
+                  placeholder="Ex: Vacances d'été, Nouvel ordinateur..."
+                  minlength="2"
+                  maxlength="200"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="targetAmount" class="form-label"
+                  >Montant cible (€)</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text"
+                    ><i class="fas fa-euro-sign"></i
+                  ></span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="targetAmount"
+                    name="targetAmount"
+                    required
+                    step="0.01"
+                    min="0.01"
+                    placeholder="Montant à atteindre"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="deadline" class="form-label">Date limite</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="deadline"
+                  name="deadline"
+                  required
+                />
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success">
+                  <i class="fas fa-save me-2"></i>
+                  Créer l'objectif d'épargne
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

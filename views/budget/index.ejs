@@ -1,0 +1,555 @@
+<%- include('../layouts/header') %>
+
+<div class="container-fluid py-4">
+  <!-- Header avec breadcrumb -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/dashboard">Tableau de bord</a>
+          </li>
+          <li class="breadcrumb-item active">Budgets</li>
+        </ol>
+      </nav>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-0">
+          <i class="fas fa-wallet money-icon me-2"></i>
+          Mes Budgets
+        </h1>
+        <div>
+          <!-- Bouton retour au dashboard -->
+          <a href="/dashboard" class="btn btn-outline-secondary me-2">
+            <i class="fas fa-home me-1"></i>
+            Dashboard
+          </a>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#createBudgetModal"
+          >
+            <i class="fas fa-plus me-2"></i>
+            Nouveau Budget
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages Flash -->
+  <% if (typeof success !== 'undefined' && success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>
+    <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  <% } %> <% if (typeof error !== 'undefined' && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>
+    <%= error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  <% } %>
+
+  <!-- Statistiques Globales -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="budget-card">
+        <div class="card-icon">
+          <i class="fas fa-wallet money-icon"></i>
+        </div>
+        <h4 class="mb-0"><%= budgets.length %></h4>
+        <p class="mb-0">Budgets Actifs</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="budget-card">
+        <div class="card-icon">
+          <i class="fas fa-coins money-icon"></i>
+        </div>
+        <h4 class="mb-0">
+          <%= budgets.reduce((total, budget) => total + budget.limitAmount,
+          0).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) %>
+        </h4>
+        <p class="mb-0">Budget Total</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="budget-card">
+        <div class="card-icon">
+          <i class="fas fa-credit-card money-icon"></i>
+        </div>
+        <h4 class="mb-0">
+          <%= budgets.reduce((total, budget) => total + budget.spentAmount,
+          0).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) %>
+        </h4>
+        <p class="mb-0">Dépensé</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="budget-card">
+        <div class="card-icon">
+          <i class="fas fa-piggy-bank money-icon"></i>
+        </div>
+        <h4 class="mb-0">
+          <%= budgets.reduce((total, budget) => total + budget.remainingAmount,
+          0).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) %>
+        </h4>
+        <p class="mb-0">Restant</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des Budgets -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title mb-0">
+        <i class="fas fa-list money-icon me-2"></i>
+        Liste de tous les budgets
+      </h5>
+    </div>
+    <div class="card-body">
+      <% if (budgets.length === 0) { %>
+      <div class="text-center py-5">
+        <i class="fas fa-wallet fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">Aucun budget créé</h5>
+        <p class="text-muted">
+          Commencez par créer votre premier budget pour mieux gérer vos
+          finances.
+        </p>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#createBudgetModal"
+        >
+          <i class="fas fa-plus me-2"></i>
+          Créer mon premier budget
+        </button>
+      </div>
+      <% } else { %>
+      <div class="row">
+        <% budgets.forEach(budget => { %>
+        <div class="col-lg-6 col-xl-4 mb-4">
+          <div class="card budget-item h-100" data-budget-id="<%= budget.id %>">
+            <div class="card-body">
+              <div
+                class="d-flex justify-content-between align-items-start mb-3"
+              >
+                <div>
+                  <h6 class="card-title mb-1">
+                    <% const categoryIcons = { 'alimentation': 'fas
+                    fa-utensils', 'transport': 'fas fa-car', 'logement': 'fas
+                    fa-home', 'loisirs': 'fas fa-gamepad', 'sante': 'fas
+                    fa-heart', 'education': 'fas fa-book', 'vetements': 'fas
+                    fa-tshirt', 'autres': 'fas fa-box' }; const iconClass =
+                    categoryIcons[budget.category] || 'fas fa-wallet'; %>
+                    <i class="<%= iconClass %> money-icon me-2"></i>
+                    <%= budget.category.charAt(0).toUpperCase() +
+                    budget.category.slice(1) %>
+                  </h6>
+                  <small class="text-muted">
+                    <i class="fas fa-calendar me-1"></i>
+                    <%= budget.month %>/<%= budget.year %>
+                  </small>
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn btn-link btn-sm"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                  >
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        onclick="editBudget(<%= budget.id %>)"
+                      >
+                        <i class="fas fa-edit me-2"></i>Modifier
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item text-danger"
+                        href="#"
+                        onclick="deleteBudget(<%= budget.id %>)"
+                      >
+                        <i class="fas fa-trash me-2"></i>Supprimer
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Montants -->
+              <div class="mb-3">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="fw-bold">Budget:</span>
+                  <span class="fw-bold text-primary">
+                    <%= budget.limitAmount.toLocaleString('fr-FR', { style:
+                    'currency', currency: 'EUR' }) %>
+                  </span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Dépensé:</span>
+                  <span
+                    class="<%= budget.isOverBudget ? 'text-danger' : 'text-warning' %>"
+                  >
+                    <%= budget.spentAmount.toLocaleString('fr-FR', { style:
+                    'currency', currency: 'EUR' }) %>
+                  </span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>Restant:</span>
+                  <span
+                    class="<%= budget.remainingAmount >= 0 ? 'text-success' : 'text-danger' %>"
+                  >
+                    <%= budget.remainingAmount.toLocaleString('fr-FR', { style:
+                    'currency', currency: 'EUR' }) %>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Barre de progression -->
+              <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <small class="text-muted">Progression</small>
+                  <small
+                    class="<%= budget.percentageUsed > 100 ? 'text-danger' : budget.percentageUsed > 80 ? 'text-warning' : 'text-success' %>"
+                  >
+                    <%= Math.round(budget.percentageUsed) %>%
+                  </small>
+                </div>
+                <div class="progress" style="height: 8px">
+                  <div
+                    class="progress-bar <%= budget.percentageUsed > 100 ? 'bg-danger' : budget.percentageUsed > 80 ? 'bg-warning' : 'bg-success' %>"
+                    role="progressbar"
+                    style="width: <%= Math.min(budget.percentageUsed, 100) %>%"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Status -->
+              <div class="text-center">
+                <% if (budget.isOverBudget) { %>
+                <span class="badge bg-danger">
+                  <i class="fas fa-exclamation-triangle me-1"></i>
+                  Dépassé
+                </span>
+                <% } else if (budget.percentageUsed > 80) { %>
+                <span class="badge bg-warning">
+                  <i class="fas fa-exclamation me-1"></i>
+                  Attention
+                </span>
+                <% } else { %>
+                <span class="badge bg-success">
+                  <i class="fas fa-check me-1"></i>
+                  Dans les limites
+                </span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Créer un Budget (réutilisation du modal du dashboard) -->
+<div
+  class="modal fade"
+  id="createBudgetModal"
+  tabindex="-1"
+  aria-labelledby="createBudgetModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="createBudgetModalLabel">
+          <i class="fas fa-wallet me-2"></i>
+          Créer un nouveau budget
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="createBudgetForm" method="POST" action="/budgets">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="budgetName" class="form-label">
+                  <i class="fas fa-tag me-1"></i>
+                  Nom du budget *
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="budgetName"
+                  name="name"
+                  required
+                  placeholder="Ex: Alimentation, Transport..."
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="budgetCategory" class="form-label">
+                  <i class="fas fa-list me-1"></i>
+                  Catégorie
+                </label>
+                <select class="form-select" id="budgetCategory" name="category">
+                  <option value="">Sélectionner une catégorie</option>
+                  <option value="alimentation">🍽️ Alimentation</option>
+                  <option value="transport">🚗 Transport</option>
+                  <option value="logement">🏠 Logement</option>
+                  <option value="loisirs">🎮 Loisirs</option>
+                  <option value="sante">🏥 Santé</option>
+                  <option value="education">📚 Éducation</option>
+                  <option value="vetements">👕 Vêtements</option>
+                  <option value="autres">📦 Autres</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="budgetAmount" class="form-label">
+                  <i class="fas fa-euro-sign me-1"></i>
+                  Montant alloué *
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">€</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="budgetAmount"
+                    name="amount"
+                    step="0.01"
+                    min="0"
+                    required
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="budgetPeriod" class="form-label">
+                  <i class="fas fa-calendar me-1"></i>
+                  Période
+                </label>
+                <select class="form-select" id="budgetPeriod" name="period">
+                  <option value="monthly">📅 Mensuel</option>
+                  <option value="weekly">📄 Hebdomadaire</option>
+                  <option value="yearly">📈 Annuel</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="budgetStartDate" class="form-label">
+                  <i class="fas fa-calendar-plus me-1"></i>
+                  Date de début
+                </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="budgetStartDate"
+                  name="start_date"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="budgetEndDate" class="form-label">
+                  <i class="fas fa-calendar-minus me-1"></i>
+                  Date de fin
+                </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="budgetEndDate"
+                  name="end_date"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="budgetDescription" class="form-label">
+              <i class="fas fa-comment me-1"></i>
+              Description (optionnelle)
+            </label>
+            <textarea
+              class="form-control"
+              id="budgetDescription"
+              name="description"
+              rows="3"
+              placeholder="Décrivez l'objectif ou les détails de ce budget..."
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="budgetNotifications"
+                name="notifications"
+                checked
+              />
+              <label class="form-check-label" for="budgetNotifications">
+                <i class="fas fa-bell me-1"></i>
+                Recevoir des notifications quand j'approche de la limite
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times me-1"></i>
+          Annuler
+        </button>
+        <button type="submit" form="createBudgetForm" class="btn btn-primary">
+          <i class="fas fa-save me-1"></i>
+          Créer le budget
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Fonctions pour gérer les budgets
+  function editBudget(budgetId) {
+    console.log("Modifier budget:", budgetId);
+    // TODO: Implémenter la modification
+    showNotification(
+      "🚧 Fonction de modification en cours d'implémentation",
+      "info"
+    );
+  }
+
+  function deleteBudget(budgetId) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce budget ?")) {
+      fetch(`/budgets/${budgetId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            showNotification("✅ " + data.message, "success");
+            // Recharger la page après suppression
+            setTimeout(() => window.location.reload(), 2000);
+          } else {
+            showNotification("❌ " + data.message, "danger");
+          }
+        })
+        .catch((error) => {
+          console.error("Erreur:", error);
+          showNotification("❌ Erreur de suppression", "danger");
+        });
+    }
+  }
+
+  // Gestion du modal de création (même logique que le dashboard)
+  document.addEventListener("DOMContentLoaded", function () {
+    const createBudgetModal = document.getElementById("createBudgetModal");
+    const createBudgetForm = document.getElementById("createBudgetForm");
+
+    if (createBudgetForm) {
+      createBudgetForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const budgetData = Object.fromEntries(formData.entries());
+
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin me-1"></i> Création...';
+        submitBtn.disabled = true;
+
+        fetch("/budgets", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(budgetData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              submitBtn.innerHTML =
+                '<i class="fas fa-check me-1"></i> Budget créé !';
+              submitBtn.classList.remove("btn-primary");
+              submitBtn.classList.add("btn-success");
+
+              setTimeout(() => {
+                bootstrap.Modal.getInstance(createBudgetModal).hide();
+                showNotification("✅ " + data.message, "success");
+                setTimeout(() => window.location.reload(), 1500);
+              }, 1500);
+            } else {
+              submitBtn.innerHTML = originalText;
+              submitBtn.disabled = false;
+              showNotification("❌ " + data.message, "danger");
+            }
+          })
+          .catch((error) => {
+            console.error("Erreur:", error);
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            showNotification("❌ Erreur de connexion", "danger");
+          });
+      });
+    }
+  });
+
+  // Fonction pour afficher des notifications
+  function showNotification(message, type = "info") {
+    const notification = document.createElement("div");
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText =
+      "top: 90px; right: 20px; z-index: 1060; max-width: 400px;";
+    notification.innerHTML = `
+    ${message}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 5000);
+  }
+</script>
+
+<%- include('../layouts/footer') %>

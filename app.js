@@ -122,6 +122,8 @@ app.use(flash());
 
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
+// Pour le débogage, permettre l'accès direct aux vues (ne pas faire en production!)
+app.use("/views", express.static(path.join(__dirname, "views")));
 
 // View engine setup
 app.set("view engine", "ejs");
@@ -146,19 +148,157 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   res.locals.info = req.flash("info");
   res.locals.warning = req.flash("warning");
+
+  // Log toutes les URL accédées
+  console.log(
+    `🌐 [${new Date().toTimeString().split(" ")[0]}] Accès URL: ${req.method} ${
+      req.url
+    }`
+  );
   next();
 });
 
 // Routes
+console.log("📝 Chargement des routes...");
 app.use("/auth", require("./routes/auth"));
+console.log("✅ Routes auth chargées");
 app.use("/dashboard", require("./routes/dashboard"));
+console.log("✅ Routes dashboard chargées");
 app.use("/transactions", require("./routes/transactions"));
+console.log("✅ Routes transactions chargées");
+app.use("/budgets", require("./routes/budgets-simple"));
+console.log("✅ Routes budgets chargées");
+console.log("🔍 Tentative de chargement des routes savings...");
+try {
+  const savingsRoutes = require("./routes/savings");
+  app.use("/savings", savingsRoutes);
+  console.log("✅ Routes savings chargées avec succès");
+} catch (error) {
+  console.error("❌ Erreur lors du chargement des routes savings:", error);
+}
 
+console.log("🔍 Tentative de chargement des routes profile...");
+try {
+  const profileRoutes = require("./routes/profile");
+  app.use("/profile", profileRoutes);
+  console.log("✅ Routes profile chargées avec succès");
+} catch (error) {
+  console.error("❌ Erreur lors du chargement des routes profile:", error);
+}
 
+console.log("🔍 Tentative de chargement des routes profile-simple...");
+try {
+  const profileSimpleRoutes = require("./routes/profile-simple");
+  app.use("/profile-simple", profileSimpleRoutes);
+  console.log("✅ Routes profile-simple chargées avec succès");
+} catch (error) {
+  console.error(
+    "❌ Erreur lors du chargement des routes profile-simple:",
+    error
+  );
+}
+
+console.log("🔍 Tentative de chargement des routes savings-test...");
+try {
+  const savingsTestRoutes = require("./routes/savings-test");
+  app.use("/savings-test", savingsTestRoutes);
+  console.log("✅ Routes savings-test chargées avec succès");
+} catch (error) {
+  console.error("❌ Erreur lors du chargement des routes savings-test:", error);
+}
 
 // Test routes
 app.get("/test", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "test-routes.html"));
+});
+
+// Route de test pour les objectifs d'épargne
+app.get("/test-savings", (req, res) => {
+  console.log("🧪 Route de test pour les objectifs d'épargne");
+  try {
+    res.render("savings/create", {
+      title: "Test - Nouvel objectif d'épargne",
+      user: req.session.user || { id: 1, name: "Utilisateur de test" },
+    });
+  } catch (error) {
+    console.error("❌ Erreur lors du rendu de la vue:", error);
+    res.status(500).send(`Erreur lors du rendu de la vue: ${error.message}`);
+  }
+});
+
+// Page de liens de test
+app.get("/test-links", (req, res) => {
+  console.log("🧪 Route pour la page de liens de test");
+  res.sendFile(path.join(__dirname, "views", "test-links.html"));
+});
+
+// Route directe pour le formulaire d'objectif d'épargne
+app.get("/savings-standalone", (req, res) => {
+  console.log("🧪 Route directe pour le formulaire d'objectif d'épargne");
+  try {
+    res.render("savings/create-standalone", {
+      title: "Nouvel objectif d'épargne",
+      user: req.session.user || { id: 1, name: "Utilisateur de test" },
+    });
+  } catch (error) {
+    console.error("❌ Erreur lors du rendu de la vue standalone:", error);
+    res
+      .status(500)
+      .send(`Erreur: ${error.message}<br><pre>${error.stack}</pre>`);
+  }
+});
+
+// Route de test avec un fichier HTML statique
+app.get("/test-savings-form", (req, res) => {
+  console.log("🧪 Route de test pour le formulaire HTML statique");
+  res.sendFile(path.join(__dirname, "views", "test-savings-form.html"));
+});
+
+// Route de test avec une vue EJS simplifiée sans layout
+app.get("/test-savings-simple", (req, res) => {
+  console.log("🧪 Route de test pour le formulaire EJS simplifié");
+  try {
+    res.render("savings/create-simple", {
+      title: "Test - Nouvel objectif d'épargne",
+      user: req.session.user || { id: 1, name: "Utilisateur de test" },
+    });
+  } catch (error) {
+    console.error("❌ Erreur lors du rendu de la vue simplifiée:", error);
+    res
+      .status(500)
+      .send(
+        `Erreur lors du rendu de la vue simplifiée: ${error.message}<br><pre>${error.stack}</pre>`
+      );
+  }
+});
+
+// Route de test pour le profil sans authentification
+app.get("/test-profile", (req, res) => {
+  console.log("🧪 Route de test pour le profil");
+  try {
+    res.render("profile/index", {
+      title: "Test - Mon Profil",
+      user: req.session.user || {
+        id: 1,
+        name: "Utilisateur de test",
+        email: "test@example.com",
+        currency: "EUR",
+      },
+    });
+  } catch (error) {
+    console.error("❌ Erreur lors du rendu de la vue profil:", error);
+    res
+      .status(500)
+      .send(
+        `Erreur lors du rendu de la vue profil: ${error.message}<br><pre>${error.stack}</pre>`
+      );
+  }
+});
+
+// Route de test avec fichier HTML statique pour le profil
+app.get("/test-profile-html", (req, res) => {
+  console.log("🧪 Route de test pour le profil HTML statique");
+  res.sendFile(path.join(__dirname, "views", "test-profile.html"));
 });
 
 app.get("/test-flow", (req, res) => {
@@ -207,15 +347,76 @@ app.get("/", async (req, res) => {
   }
 });
 
+// Route de profil directe
+app.get("/profile-direct", (req, res) => {
+  console.log("🧪 Route directe pour le profil");
+  try {
+    const userId = req.session.userId;
+
+    if (!userId) {
+      console.log("❌ Utilisateur non authentifié pour profil-direct");
+      return res.render("profile/index", {
+        title: "Mon Profil (non authentifié)",
+        user: {
+          id: 0,
+          name: "Visiteur",
+          email: "demo@example.com",
+          currency: "EUR",
+        },
+      });
+    }
+
+    // Même si l'utilisateur est authentifié, utiliser des données de test
+    console.log("✅ Rendu du profil avec ID utilisateur:", userId);
+    res.render("profile/index", {
+      title: "Mon Profil",
+      user: req.session.user || {
+        id: userId,
+        name: "Utilisateur connecté",
+        email: "user@example.com",
+        currency: "EUR",
+      },
+    });
+  } catch (error) {
+    console.error("❌ Erreur lors du rendu de la vue profil directe:", error);
+    res
+      .status(500)
+      .send(
+        `Erreur lors du rendu de la vue profil directe: ${error.message}<br><pre>${error.stack}</pre>`
+      );
+  }
+});
+
 // 404 handler
 app.use((req, res) => {
-  res.status(404).send("Page non trouvée");
+  console.log(`❌ 404 Error: ${req.method} ${req.url}`);
+  res.status(404).render("404", {
+    title: "Page non trouvée",
+    url: req.url,
+    method: req.method,
+  });
 });
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Erreur interne du serveur");
+  console.error("❌ Erreur serveur:", err);
+
+  // Log detailed error information
+  console.error(`URL: ${req.url}`);
+  console.error(`Method: ${req.method}`);
+  console.error(`Stack trace: ${err.stack}`);
+
+  // Set appropriate status code (default to 500 if not set)
+  const statusCode = err.statusCode || 500;
+
+  // Render the error page with details
+  res.status(statusCode).render("error", {
+    title: statusCode === 500 ? "Erreur interne du serveur" : "Erreur",
+    message: err.message || "Une erreur inattendue s'est produite.",
+    error: process.env.NODE_ENV !== "production" ? err : {},
+    status: statusCode,
+    url: req.url,
+  });
 });
 
 // Start server

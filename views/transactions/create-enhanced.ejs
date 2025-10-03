@@ -1,0 +1,1445 @@
+<%- include('../layouts/header') %>
+
+<!-- Modern Modal Overlay with Neumorphic Glass Effect -->
+<div
+  class="modal-overlay-bg"
+  style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.75);
+    background-image: linear-gradient(
+      to bottom right,
+      rgba(29, 78, 216, 0.05),
+      rgba(124, 58, 237, 0.05)
+    );
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  "
+>
+  <!-- Modern Modal Content with 3D Effect -->
+  <div
+    class="modal-content-container neo-card"
+    style="
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3),
+        0 15px 30px -10px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      max-width: 700px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transform: perspective(1000px) rotateX(0deg);
+      transform-origin: top;
+    "
+  >
+    <!-- Modern Close Button with Animation -->
+    <a
+      href="/transactions"
+      class="btn-close-modal"
+      style="
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        z-index: 10;
+        background: rgba(237, 242, 247, 0.8);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #4a5568;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+      "
+      onmouseover="this.style.background='#e2e8f0'; this.style.color='#1A202C'; this.style.transform='rotate(90deg)'"
+      onmouseout="this.style.background='rgba(237, 242, 247, 0.8)'; this.style.color='#4A5568'; this.style.transform='rotate(0deg)'"
+    >
+      <i class="fas fa-times"></i>
+    </a>
+
+    <div class="container-fluid py-4" style="background: transparent">
+      <!-- Enhanced Breadcrumb -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <nav aria-label="breadcrumb">
+            <ol
+              class="breadcrumb"
+              style="font-size: 0.85rem; margin-bottom: 0.5rem"
+            >
+              <li class="breadcrumb-item">
+                <a
+                  href="/dashboard"
+                  style="
+                    color: #3b82f6;
+                    text-decoration: none;
+                    font-weight: 500;
+                  "
+                >
+                  <i class="fas fa-home me-1"></i>Tableau de bord
+                </a>
+              </li>
+              <li class="breadcrumb-item">
+                <a
+                  href="/transactions"
+                  style="
+                    color: #3b82f6;
+                    text-decoration: none;
+                    font-weight: 500;
+                  "
+                >
+                  <i class="fas fa-exchange-alt me-1"></i>Transactions
+                </a>
+              </li>
+              <li class="breadcrumb-item active" style="color: #64748b">
+                Nouvelle
+              </li>
+            </ol>
+          </nav>
+
+          <!-- Enhanced Title with 3D Icon and Animation -->
+          <h1 class="h3 mb-0 d-flex align-items-center">
+            <div
+              class="icon-circle me-3"
+              style="
+                background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+                width: 46px;
+                height: 46px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35),
+                  0 0 0 2px rgba(255, 255, 255, 0.1) inset;
+                animation: pulseGlow 2.5s infinite;
+                position: relative;
+                z-index: 1;
+                overflow: hidden;
+              "
+            >
+              <div class="icon-shine"></div>
+              <i
+                class="fas fa-plus text-white"
+                style="font-size: 18px; transform: translateY(1px)"
+              ></i>
+            </div>
+            <span class="title-gradient"> Nouvelle Transaction </span>
+          </h1>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <!-- Enhanced Card with 3D Effects -->
+          <div
+            class="card shadow-lg neo-card"
+            style="
+              border: none;
+              border-radius: 20px;
+              overflow: hidden;
+              background: #ffffff;
+            "
+          >
+            <!-- Enhanced Gradient Header with Animation Effects -->
+            <div
+              class="card-header py-3 header-gradient"
+              style="
+                border: none;
+                position: relative;
+                overflow: hidden;
+                border-radius: 20px 20px 0 0;
+              "
+            >
+              <!-- Animated Gradient Overlay -->
+              <div class="gradient-overlay"></div>
+              <!-- Subtle Pattern Overlay -->
+              <div class="pattern-overlay"></div>
+
+              <h5
+                class="card-title mb-0 text-white d-flex align-items-center"
+                style="
+                  position: relative;
+                  z-index: 1;
+                  font-weight: 600;
+                  letter-spacing: 0.01em;
+                "
+              >
+                <i class="fas fa-exchange-alt me-2"></i>
+                Ajouter une Transaction
+              </h5>
+            </div>
+
+            <form
+              id="transactionForm"
+              method="POST"
+              action="/transactions"
+              novalidate
+            >
+              <div class="card-body p-4">
+                <!-- Enhanced Error Display -->
+                <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+                <div
+                  class="alert alert-danger neo-alert"
+                  style="
+                    border-radius: 12px;
+                    border: none;
+                    background-color: #fee2e2;
+                    border-left: 5px solid #dc2626;
+                    padding: 1rem;
+                    box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.1);
+                  "
+                >
+                  <h6
+                    class="d-flex align-items-center"
+                    style="color: #991b1b; font-weight: 600"
+                  >
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Erreurs de validation
+                  </h6>
+                  <ul class="mb-0 ps-4 mt-2" style="color: #b91c1c">
+                    <% errors.forEach(error => { %>
+                    <li><%= error.msg %></li>
+                    <% }) %>
+                  </ul>
+                </div>
+                <% } %>
+
+                <!-- Enhanced Transaction Type Selector -->
+                <div class="mb-4">
+                  <label class="form-label d-flex align-items-center">
+                    <span class="label-icon me-2">
+                      <i class="fas fa-exchange-alt"></i>
+                    </span>
+                    Type de Transaction <span class="text-danger">*</span>
+                  </label>
+                  <div class="transaction-type-selector">
+                    <input type="radio" class="btn-check" name="type"
+                    id="income" value="income" <%= (typeof formData !==
+                    'undefined' && formData.type === 'income') ? 'checked' :
+                    (typeof formData === 'undefined' || !formData.type) ?
+                    'checked' : '' %>>
+                    <label
+                      class="btn type-selector-btn"
+                      for="income"
+                      id="income-label"
+                    >
+                      <i class="fas fa-arrow-circle-up me-2"></i>
+                      Revenu
+                    </label>
+
+                    <input type="radio" class="btn-check" name="type"
+                    id="expense" value="expense" <%= (typeof formData !==
+                    'undefined' && formData.type === 'expense') ? 'checked' : ''
+                    %>>
+                    <label
+                      class="btn type-selector-btn"
+                      for="expense"
+                      id="expense-label"
+                    >
+                      <i class="fas fa-arrow-circle-down me-2"></i>
+                      Dépense
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Enhanced Amount Input with Floating Label Effect -->
+                <div class="mb-4 form-floating-group">
+                  <label class="form-label d-flex align-items-center">
+                    <span class="label-icon me-2">
+                      <i class="fas fa-euro-sign"></i>
+                    </span>
+                    Montant <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group neo-input">
+                    <span class="input-group-text">
+                      <i class="fas fa-euro-sign"></i>
+                    </span>
+                    <input
+                      type="number"
+                      class="form-control form-control-lg"
+                      id="amount"
+                      name="amount"
+                      min="0.01"
+                      max="999999.99"
+                      step="0.01"
+                      required
+                      value="<%= (typeof formData !== 'undefined') ? formData.amount : '' %>"
+                      placeholder="0.00"
+                    />
+                  </div>
+                  <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i> Montant entre 0,01€
+                    et 999 999,99€
+                  </div>
+                </div>
+
+                <!-- Enhanced Category Select -->
+                <div class="mb-4">
+                  <label class="form-label d-flex align-items-center">
+                    <span class="label-icon me-2">
+                      <i class="fas fa-tag"></i>
+                    </span>
+                    Catégorie <span class="text-danger">*</span>
+                  </label>
+                  <select
+                    class="form-select form-select-lg neo-select"
+                    id="category"
+                    name="category"
+                  >
+                    <option value="">Sélectionner une catégorie...</option>
+                    <!-- Les options seront ajoutées dynamiquement via JavaScript -->
+                  </select>
+
+                  <!-- Enhanced New Category Option -->
+                  <div class="mt-2">
+                    <div class="form-check d-flex align-items-center">
+                      <input
+                        class="form-check-input neo-checkbox"
+                        type="checkbox"
+                        id="newCategoryToggle"
+                      />
+                      <label
+                        class="form-check-label ps-2"
+                        for="newCategoryToggle"
+                      >
+                        <i class="fas fa-plus-circle me-1"></i>
+                        Créer une nouvelle catégorie
+                      </label>
+                    </div>
+
+                    <div id="newCategoryGroup" class="mt-2 slide-down-hidden">
+                      <input
+                        type="text"
+                        class="form-control neo-input"
+                        id="newCategory"
+                        name="newCategory"
+                        maxlength="100"
+                        placeholder="Nom de la nouvelle catégorie"
+                        value="<%= (typeof formData !== 'undefined') ? formData.newCategory : '' %>"
+                      />
+                      <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i> Maximum 100
+                        caractères
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Enhanced Date Input -->
+                <div class="mb-4">
+                  <label class="form-label d-flex align-items-center">
+                    <span class="label-icon me-2">
+                      <i class="fas fa-calendar-alt"></i>
+                    </span>
+                    Date <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group neo-input">
+                    <span class="input-group-text">
+                      <i class="fas fa-calendar-alt"></i>
+                    </span>
+                    <input
+                      type="date"
+                      class="form-control form-control-lg"
+                      id="date"
+                      name="date"
+                      required
+                    />
+                  </div>
+                  <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i> Laissez vide pour
+                    utiliser la date d'aujourd'hui
+                  </div>
+                </div>
+
+                <!-- Enhanced Description Textarea -->
+                <div class="mb-4">
+                  <label class="form-label d-flex align-items-center">
+                    <span class="label-icon me-2">
+                      <i class="fas fa-align-left"></i>
+                    </span>
+                    Description
+                  </label>
+                  <textarea
+                    class="form-control neo-textarea"
+                    id="description"
+                    name="description"
+                    rows="3"
+                    maxlength="255"
+                    placeholder="Description optionnelle de la transaction..."
+                  ></textarea>
+                  <div class="d-flex justify-content-between">
+                    <div class="form-text">
+                      <i class="fas fa-info-circle me-1"></i> Description
+                      optionnelle
+                    </div>
+                    <div class="char-counter">
+                      <span id="charCount">0</span>/255
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Enhanced Preview Card with Animation -->
+                <div id="transactionPreview" class="card mt-4 mb-2 neo-preview">
+                  <div class="card-body p-4">
+                    <h6 class="card-title d-flex align-items-center">
+                      <div class="preview-icon-circle me-2">
+                        <i class="fas fa-eye"></i>
+                      </div>
+                      Aperçu de la transaction
+                    </h6>
+                    <div
+                      id="previewContent"
+                      class="p-3 rounded-3 preview-content"
+                    >
+                      <!-- Le contenu sera généré par JavaScript -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Enhanced Action Buttons -->
+              <div class="card-footer p-4 neo-footer">
+                <div class="d-flex justify-content-between align-items-center">
+                  <a
+                    href="/transactions"
+                    class="btn btn-light btn-lg neo-btn-back"
+                  >
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Retour
+                  </a>
+                  <div class="d-flex">
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-lg me-2 neo-btn-outline"
+                      id="previewBtn"
+                    >
+                      <i class="fas fa-eye me-2"></i>
+                      Aperçu
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-primary btn-lg neo-btn-primary"
+                    >
+                      <div class="button-shine"></div>
+                      <i class="fas fa-save me-2"></i>
+                      Enregistrer
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories Data -->
+    <script type="application/json" id="categories-data">
+      <%- JSON.stringify(categories) %>
+    </script>
+
+    <!-- Form Data -->
+    <script type="application/json" id="form-data">
+      <%- typeof formData !== 'undefined' ? JSON.stringify(formData) : 'null' %>
+    </script>
+  </div>
+</div>
+
+<!-- Styles for the enhanced design -->
+<style>
+  /* Advanced 3D Card Effect */
+  .neo-card {
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3),
+      0 15px 30px -10px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Title Gradient */
+  .title-gradient {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  /* Header Gradient */
+  .header-gradient {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  }
+
+  /* Animated Icon Shine Effect */
+  .icon-shine {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transform: rotate(45deg);
+    animation: iconShine 3s infinite linear;
+  }
+
+  /* Gradient Overlay Animation */
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: shimmer 2s infinite linear;
+  }
+
+  /* Pattern Overlay */
+  .pattern-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px
+    );
+    background-size: 20px 20px;
+    opacity: 0.3;
+  }
+
+  /* Transaction Type Selector */
+  .transaction-type-selector {
+    background: #f8fafc;
+    padding: 6px;
+    border-radius: 14px;
+    display: flex;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.03);
+    position: relative;
+    z-index: 1;
+    margin-top: 8px;
+  }
+
+  /* Type Selector Buttons */
+  .type-selector-btn {
+    flex: 1;
+    text-align: center;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 0;
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #income-label {
+    color: #047857;
+  }
+
+  #expense-label {
+    color: #be123c;
+  }
+
+  /* Form Inputs with Neumorphic Style */
+  .neo-input,
+  .neo-select,
+  .neo-textarea {
+    border-radius: 14px;
+    border-color: #e2e8f0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .neo-input {
+    overflow: hidden;
+  }
+
+  .neo-input .input-group-text {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-right: none;
+    padding-left: 1rem;
+  }
+
+  .neo-input .form-control {
+    border-left: none;
+    height: 54px;
+    border-color: #e2e8f0;
+    padding-left: 0.5rem;
+  }
+
+  .neo-select {
+    height: 54px;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%233B82F6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-position: right 0.75rem center;
+    padding: 0.5rem 1rem;
+  }
+
+  .neo-textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  /* Label Icon Style */
+  .label-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 50%;
+  }
+
+  .label-icon i {
+    font-size: 10px;
+    color: #3b82f6;
+  }
+
+  /* Form Label Style */
+  .form-label {
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Checkbox Style */
+  .neo-checkbox {
+    width: 18px;
+    height: 18px;
+    margin-top: 0.2rem;
+    cursor: pointer;
+    border-color: #cbd5e1;
+  }
+
+  /* Form Text Style */
+  .form-text {
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Character Counter */
+  .char-counter {
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  #charCount {
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+
+  /* Preview Card */
+  .neo-preview {
+    display: none;
+    border: none;
+    border-radius: 12px;
+    background: #f8fafc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px dashed #cbd5e1;
+  }
+
+  .preview-icon-circle {
+    background: rgba(59, 130, 246, 0.1);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-icon-circle i {
+    color: #3b82f6;
+    font-size: 14px;
+  }
+
+  .preview-content {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Footer Style */
+  .neo-footer {
+    background-color: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    border-radius: 0 0 20px 20px;
+  }
+
+  /* Button Styles */
+  .neo-btn-back {
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+  }
+
+  .neo-btn-back:hover {
+    background: #f1f5f9;
+    transform: translateY(-1px);
+  }
+
+  .neo-btn-outline {
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border: 1px solid #3b82f6;
+    color: #3b82f6;
+    transition: all 0.3s ease;
+  }
+
+  .neo-btn-outline:hover {
+    background: rgba(59, 130, 246, 0.05);
+    transform: translateY(-1px);
+  }
+
+  .neo-btn-primary {
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    background-size: 200% auto;
+    border: none;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25),
+      0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.01em;
+  }
+
+  .neo-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35),
+      0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 -1px 0 rgba(0, 0, 0, 0.2) inset;
+    background-position: right center;
+  }
+
+  .button-shine {
+    position: absolute;
+    top: -180px;
+    left: -40px;
+    width: 10px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(45deg);
+    animation: buttonShine 4s ease-in-out infinite;
+  }
+
+  /* Hidden Element with Slide Animation */
+  .slide-down-hidden {
+    display: none;
+    transition: all 0.3s ease;
+  }
+
+  /* Animations */
+  @keyframes modalSlideUp {
+    0% {
+      opacity: 0;
+      transform: perspective(1000px) rotateX(2deg) translateY(30px) scale(0.97);
+    }
+    100% {
+      opacity: 1;
+      transform: perspective(1000px) rotateX(0deg) translateY(0) scale(1);
+    }
+  }
+
+  @keyframes pulseGlow {
+    0% {
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35),
+        0 0 0 2px rgba(255, 255, 255, 0.1) inset;
+    }
+    50% {
+      box-shadow: 0 10px 24px rgba(59, 130, 246, 0.5),
+        0 0 0 2px rgba(255, 255, 255, 0.15) inset;
+    }
+    100% {
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35),
+        0 0 0 2px rgba(255, 255, 255, 0.1) inset;
+    }
+  }
+
+  @keyframes iconShine {
+    0% {
+      left: -100%;
+    }
+    20% {
+      left: 100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes buttonShine {
+    0% {
+      left: -150px;
+    }
+    30% {
+      left: 350px;
+    }
+    100% {
+      left: 350px;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Focus Styles */
+  .form-control:focus,
+  .form-select:focus,
+  .form-check-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    outline: none;
+  }
+
+  /* Hover Effects */
+  .neo-input:hover,
+  .neo-select:hover,
+  .neo-textarea:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Scrollbar Styling */
+  .modal-content-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .modal-content-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 8px;
+  }
+
+  .modal-content-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 8px;
+    border: 2px solid #f1f5f9;
+  }
+
+  .modal-content-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .modal-content-container {
+      margin: 10px;
+      max-height: 95vh;
+      width: calc(100% - 20px);
+      max-width: 600px;
+    }
+
+    .neo-footer {
+      padding: 1.5rem !important;
+    }
+
+    .btn-lg {
+      font-size: 0.9rem;
+      padding: 0.6rem 1.2rem !important;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .modal-content-container {
+      margin: 5px;
+      max-width: calc(100% - 10px);
+      border-radius: 16px !important;
+    }
+
+    .card-body {
+      padding: 1.25rem !important;
+    }
+
+    .transaction-type-selector {
+      flex-direction: column;
+    }
+
+    .type-selector-btn {
+      margin-bottom: 8px !important;
+    }
+
+    .neo-footer .d-flex {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .neo-btn-back {
+      margin-bottom: 1rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    .neo-footer .d-flex .d-flex {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .neo-btn-outline,
+    .neo-btn-primary {
+      flex: 1;
+    }
+
+    .neo-btn-outline {
+      margin-right: 8px !important;
+    }
+  }
+</style>
+
+<!-- Enhanced JavaScript for Interactive Effects -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Données des catégories depuis le serveur
+    const categoriesData = document.getElementById("categories-data");
+    const categories = JSON.parse(categoriesData.textContent);
+
+    // Éléments du DOM
+    const typeRadios = document.querySelectorAll('input[name="type"]');
+    const categorySelect = document.getElementById("category");
+    const newCategoryToggle = document.getElementById("newCategoryToggle");
+    const newCategoryGroup = document.getElementById("newCategoryGroup");
+    const newCategoryInput = document.getElementById("newCategory");
+    const descriptionTextarea = document.getElementById("description");
+    const charCount = document.getElementById("charCount");
+    const previewBtn = document.getElementById("previewBtn");
+    const transactionPreview = document.getElementById("transactionPreview");
+    const form = document.getElementById("transactionForm");
+    const dateInput = document.getElementById("date");
+    const modalContent = document.querySelector(".modal-content-container");
+
+    // Set default date if not already set
+    if (dateInput && !dateInput.value) {
+      dateInput.value = new Date().toISOString().split("T")[0];
+    }
+
+    // Set form data from server if available
+    const formDataElement = document.getElementById("form-data");
+    const formData = formDataElement
+      ? JSON.parse(formDataElement.textContent)
+      : null;
+    if (formData) {
+      if (formData.amount)
+        document.getElementById("amount").value = formData.amount;
+      if (formData.description)
+        document.getElementById("description").value = formData.description;
+      if (formData.newCategory)
+        document.getElementById("newCategory").value = formData.newCategory;
+      if (formData.date) dateInput.value = formData.date;
+    }
+
+    // Initialize
+    updateCategories();
+    updateCharCount();
+
+    // Set initial styles for transaction type
+    updateTypeStyles();
+
+    // Add 3D effect to modal on mouse movement
+    document.addEventListener("mousemove", function (e) {
+      if (modalContent) {
+        const x = e.clientX / window.innerWidth - 0.5;
+        const y = e.clientY / window.innerHeight - 0.5;
+
+        modalContent.style.transform = `perspective(1000px) rotateX(${
+          y * 2
+        }deg) rotateY(${-x * 2}deg)`;
+      }
+    });
+
+    // Force la mise à jour des catégories si un type est déjà sélectionné
+    const checkedType = document.querySelector('input[name="type"]:checked');
+    if (checkedType) {
+      updateCategories();
+    }
+
+    // Si des données de formulaire existent (après erreur de validation)
+    if (formData && formData.type) {
+      updateCategories();
+      if (formData.newCategory) {
+        newCategoryToggle.checked = true;
+        toggleNewCategory(true);
+      }
+    }
+
+    // Gestion du changement de type
+    typeRadios.forEach((radio) => {
+      radio.addEventListener("change", function () {
+        updateCategories();
+        updatePreview();
+        updateTypeStyles();
+      });
+    });
+
+    // Gestion du toggle nouvelle catégorie avec animation
+    newCategoryToggle.addEventListener("change", function () {
+      toggleNewCategory(this.checked);
+      updatePreview();
+    });
+
+    // Toggle nouvelle catégorie avec animation
+    function toggleNewCategory(show) {
+      if (show) {
+        newCategoryGroup.style.display = "block";
+        categorySelect.disabled = true;
+        categorySelect.value = "";
+
+        // Animation
+        setTimeout(() => {
+          newCategoryGroup.style.opacity = "1";
+          newCategoryGroup.style.transform = "translateY(0)";
+          newCategoryInput.focus();
+        }, 10);
+      } else {
+        newCategoryGroup.style.opacity = "0";
+        newCategoryGroup.style.transform = "translateY(-10px)";
+
+        setTimeout(() => {
+          newCategoryGroup.style.display = "none";
+          categorySelect.disabled = false;
+          newCategoryInput.value = "";
+        }, 300);
+      }
+    }
+
+    // Add hover effects to inputs
+    const neoElements = document.querySelectorAll(
+      ".neo-input, .neo-select, .neo-textarea"
+    );
+    neoElements.forEach((el) => {
+      el.addEventListener("mouseenter", function () {
+        this.style.boxShadow =
+          "0 5px 15px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(0,0,0,0.03)";
+      });
+
+      el.addEventListener("mouseleave", function () {
+        if (!this.querySelector(":focus")) {
+          this.style.boxShadow =
+            "0 3px 10px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(0,0,0,0.02)";
+        }
+      });
+    });
+
+    // Compteur de caractères avec animation de couleur
+    descriptionTextarea.addEventListener("input", function () {
+      updateCharCount();
+      updatePreview();
+    });
+
+    // Mise à jour automatique de l'aperçu
+    const formInputs = ["amount", "category", "newCategory", "date"];
+    formInputs.forEach((inputId) => {
+      const input = document.getElementById(inputId);
+      if (input) {
+        input.addEventListener("input", updatePreview);
+        input.addEventListener("change", updatePreview);
+      }
+    });
+
+    // Bouton aperçu avec animation améliorée
+    previewBtn.addEventListener("click", function () {
+      updatePreview();
+
+      if (window.getComputedStyle(transactionPreview).display === "none") {
+        // Afficher avec animation
+        transactionPreview.style.display = "block";
+        transactionPreview.style.opacity = "0";
+        transactionPreview.style.transform = "translateY(20px)";
+
+        setTimeout(() => {
+          transactionPreview.style.transition =
+            "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)";
+          transactionPreview.style.opacity = "1";
+          transactionPreview.style.transform = "translateY(0)";
+        }, 10);
+
+        this.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Masquer';
+
+        // Scroll jusqu'à l'aperçu avec animation
+        setTimeout(() => {
+          transactionPreview.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+        }, 100);
+      } else {
+        // Cacher avec animation
+        transactionPreview.style.opacity = "0";
+        transactionPreview.style.transform = "translateY(20px)";
+
+        setTimeout(() => {
+          transactionPreview.style.display = "none";
+        }, 300);
+
+        this.innerHTML = '<i class="fas fa-eye me-2"></i>Aperçu';
+      }
+    });
+
+    // Validation du formulaire avec animation
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      if (validateForm()) {
+        // Animation de soumission
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin me-1"></i>Enregistrement...';
+        submitBtn.disabled = true;
+
+        // Scale animation
+        submitBtn.style.transform = "scale(0.97)";
+
+        // Soumission du formulaire avec délai pour animation
+        setTimeout(() => {
+          form.submit();
+        }, 500);
+      }
+    });
+
+    // Fonctions utilitaires
+    function updateTypeStyles() {
+      const incomeRadio = document.getElementById("income");
+      const incomeLabel = document.getElementById("income-label");
+      const expenseLabel = document.getElementById("expense-label");
+      const cardHeader = document.querySelector(".header-gradient");
+
+      if (incomeRadio.checked) {
+        incomeLabel.style.backgroundColor = "#ECFDF5";
+        incomeLabel.style.boxShadow =
+          "0 4px 12px rgba(4, 120, 87, 0.15), 0 1px 0 rgba(255, 255, 255, 0.2) inset";
+        incomeLabel.style.transform = "scale(1.02)";
+        expenseLabel.style.backgroundColor = "transparent";
+        expenseLabel.style.boxShadow = "none";
+        expenseLabel.style.transform = "scale(1)";
+
+        // Change header gradient for income
+        cardHeader.style.background =
+          "linear-gradient(135deg, #0F766E 0%, #059669 50%, #10B981 100%)";
+      } else {
+        expenseLabel.style.backgroundColor = "#FEE2E2";
+        expenseLabel.style.boxShadow =
+          "0 4px 12px rgba(190, 18, 60, 0.15), 0 1px 0 rgba(255, 255, 255, 0.2) inset";
+        expenseLabel.style.transform = "scale(1.02)";
+        incomeLabel.style.backgroundColor = "transparent";
+        incomeLabel.style.boxShadow = "none";
+        incomeLabel.style.transform = "scale(1)";
+
+        // Change header gradient for expense
+        cardHeader.style.background =
+          "linear-gradient(135deg, #9F1239 0%, #BE123C 50%, #E11D48 100%)";
+      }
+    }
+
+    function updateCategories() {
+      if (!categorySelect) {
+        console.error("Category select element not found!");
+        return;
+      }
+
+      const selectedType = document.querySelector(
+        'input[name="type"]:checked'
+      )?.value;
+      const categoryList = selectedType ? categories[selectedType] : [];
+
+      // Vider les options existantes
+      categorySelect.innerHTML =
+        '<option value="">Sélectionner une catégorie...</option>';
+
+      // Ajouter les catégories avec animation
+      categoryList.forEach((cat, index) => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+
+        // Sélection de la catégorie si elle existe dans formData
+        if (formData && formData.category && cat === formData.category) {
+          option.selected = true;
+        }
+
+        categorySelect.appendChild(option);
+      });
+    }
+
+    function updateCharCount() {
+      const count = descriptionTextarea.value.length;
+      charCount.textContent = count;
+
+      // Update color based on count
+      if (count > 230) {
+        charCount.style.color = "#F59E0B";
+      } else if (count > 240) {
+        charCount.style.color = "#DC2626";
+      } else {
+        charCount.style.color = "#64748B";
+      }
+    }
+
+    function updatePreview() {
+      const type = document.querySelector('input[name="type"]:checked')?.value;
+      const amount = document.getElementById("amount").value;
+      const category = newCategoryToggle.checked
+        ? newCategoryInput.value
+        : categorySelect.value;
+      const description = descriptionTextarea.value;
+      const date = document.getElementById("date").value;
+
+      if (!type || !amount || !category) {
+        return;
+      }
+
+      const formattedAmount = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "EUR",
+      }).format(parseFloat(amount));
+
+      const formattedDate = date
+        ? new Date(date).toLocaleDateString("fr-FR", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })
+        : "Aujourd'hui";
+
+      const typeLabel = type === "income" ? "Revenu" : "Dépense";
+      const typeColor = type === "income" ? "success" : "danger";
+      const typeIcon =
+        type === "income" ? "arrow-circle-up" : "arrow-circle-down";
+      const bgColor =
+        type === "income" ? "rgba(4, 120, 87, 0.1)" : "rgba(190, 18, 60, 0.1)";
+      const textColor = type === "income" ? "#047857" : "#BE123C";
+
+      document.getElementById("previewContent").innerHTML = `
+        <div class="transaction-preview p-3 rounded-3" style="background-color: ${bgColor}; animation: fadeIn 0.5s ease;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <span class="badge rounded-pill px-3 py-2 mb-2" style="
+                  background-color: ${
+                    type === "income" ? "#ECFDF5" : "#FEE2E2"
+                  };
+                  color: ${textColor};
+                  border: 1px solid ${
+                    type === "income" ? "#A7F3D0" : "#FECACA"
+                  };
+                  font-weight: 600;
+                  font-size: 0.8rem;
+              ">
+                <i class="fas fa-${typeIcon} me-1"></i>
+                ${typeLabel}
+              </span>
+              <h5 class="mb-0 mt-2" style="font-weight: 600; color: #1E293B;">
+                ${category}
+              </h5>
+            </div>
+            <div class="text-end">
+              <h4 style="color: ${textColor}; font-weight: 700; margin-bottom: 5px;">
+                ${type === "income" ? "+" : "-"}${formattedAmount}
+              </h4>
+              <div class="d-flex align-items-center" style="font-size: 0.85rem; color: #64748B;">
+                <i class="far fa-calendar-alt me-1"></i>
+                ${formattedDate}
+              </div>
+            </div>
+          </div>
+          ${
+            description
+              ? `<div class="mt-2 pt-2" style="border-top: 1px solid ${
+                  type === "income"
+                    ? "rgba(4, 120, 87, 0.15)"
+                    : "rgba(190, 18, 60, 0.15)"
+                };">
+                  <div style="color: #475569; font-size: 0.9rem;">
+                    <i class="far fa-comment-alt me-2" style="color: ${textColor};"></i>
+                    ${description}
+                  </div>
+                </div>`
+              : ""
+          }
+        </div>
+      `;
+    }
+
+    function validateForm() {
+      let isValid = true;
+      const errors = [];
+
+      // Validation du type
+      const type = document.querySelector('input[name="type"]:checked');
+      if (!type) {
+        errors.push("Le type de transaction est requis");
+        isValid = false;
+      }
+
+      // Validation du montant
+      const amount = parseFloat(document.getElementById("amount").value);
+      if (!amount || amount < 0.01 || amount > 999999.99) {
+        errors.push("Le montant doit être entre 0,01€ et 999 999,99€");
+        isValid = false;
+        document.getElementById("amount").classList.add("is-invalid");
+      } else {
+        document.getElementById("amount").classList.remove("is-invalid");
+      }
+
+      // Validation de la catégorie
+      const category = newCategoryToggle.checked
+        ? newCategoryInput.value
+        : categorySelect.value;
+      if (!category || category.trim().length === 0) {
+        errors.push("La catégorie est requise");
+        isValid = false;
+
+        if (newCategoryToggle.checked) {
+          newCategoryInput.classList.add("is-invalid");
+        } else {
+          categorySelect.classList.add("is-invalid");
+        }
+      } else {
+        newCategoryInput.classList.remove("is-invalid");
+        categorySelect.classList.remove("is-invalid");
+      }
+
+      // Affichage des erreurs
+      if (!isValid) {
+        showErrors(errors);
+
+        // Shake animation on invalid fields
+        document.querySelectorAll(".is-invalid").forEach((el) => {
+          el.style.animation = "shake 0.5s cubic-bezier(.36,.07,.19,.97) both";
+          setTimeout(() => {
+            el.style.animation = "";
+          }, 500);
+        });
+      }
+
+      return isValid;
+    }
+
+    function showErrors(errors) {
+      // Suppression des anciennes erreurs
+      const oldAlert = document.querySelector(".alert-danger");
+      if (oldAlert) {
+        oldAlert.remove();
+      }
+
+      // Création de la nouvelle alerte
+      const alert = document.createElement("div");
+      alert.className = "alert alert-danger neo-alert";
+      alert.style = `
+        border-radius: 12px;
+        border: none;
+        background-color: #FEE2E2;
+        border-left: 5px solid #DC2626;
+        padding: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.1);
+        animation: fadeIn 0.3s ease;
+      `;
+
+      alert.innerHTML = `
+        <h6 class="d-flex align-items-center" style="color: #991B1B; font-weight: 600;">
+          <i class="fas fa-exclamation-circle me-2"></i>
+          Erreurs de validation
+        </h6>
+        <ul class="mb-0 ps-4 mt-2" style="color: #B91C1C;">
+          ${errors.map((error) => `<li>${error}</li>`).join("")}
+        </ul>
+      `;
+
+      // Insertion au début du card-body
+      const cardBody = document.querySelector(".card-body");
+      cardBody.insertBefore(alert, cardBody.firstChild);
+
+      // Scroll vers le haut avec animation
+      alert.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+</script>
+
+<!-- Additional animations -->
+<style>
+  @keyframes shake {
+    10%,
+    90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    20%,
+    80% {
+      transform: translate3d(2px, 0, 0);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+    40%,
+    60% {
+      transform: translate3d(4px, 0, 0);
+    }
+  }
+
+  .is-invalid {
+    border-color: #dc2626 !important;
+  }
+</style>
+
+<%- include('../layouts/footer') %>

@@ -1,0 +1,1485 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Gérer mes budgets</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-color: #6366f1;
+        --secondary-color: #8b5cf6;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --dark-color: #1f2937;
+        --light-color: #f8fafc;
+        --border-color: #e5e7eb;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: var(--dark-color);
+      }
+
+      /* Sidebar */
+      .sidebar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        margin: 20px;
+        padding: 0;
+        height: calc(100vh - 40px);
+        position: fixed;
+        width: 280px;
+        z-index: 1000;
+      }
+
+      .sidebar-header {
+        padding: 30px 20px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: center;
+      }
+
+      .sidebar-header h4 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .sidebar-header p {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin: 5px 0 0 0;
+      }
+
+      .sidebar-nav {
+        padding: 20px 0;
+      }
+
+      .sidebar-nav .nav-link {
+        color: var(--dark-color);
+        padding: 15px 25px;
+        border-radius: 0;
+        margin: 0 10px;
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        font-weight: 500;
+      }
+
+      .sidebar-nav .nav-link:hover,
+      .sidebar-nav .nav-link.active {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        transform: translateX(5px);
+      }
+
+      .sidebar-nav .nav-link i {
+        width: 20px;
+        margin-right: 10px;
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-left: 320px;
+        padding: 20px;
+      }
+
+      /* Header */
+      .page-header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .page-title {
+        color: var(--dark-color);
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .page-title i {
+        color: var(--primary-color);
+        font-size: 2rem;
+      }
+
+      /* Stats Cards */
+      .stats-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: none;
+        transition: all 0.3s ease;
+        height: 100%;
+      }
+
+      .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .stats-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        margin-bottom: 20px;
+      }
+
+      .stats-icon.primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+      }
+      .stats-icon.success {
+        background: linear-gradient(135deg, var(--success-color), #059669);
+      }
+      .stats-icon.warning {
+        background: linear-gradient(135deg, var(--warning-color), #d97706);
+      }
+      .stats-icon.danger {
+        background: linear-gradient(135deg, var(--danger-color), #dc2626);
+      }
+
+      .stats-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--dark-color);
+        margin-bottom: 5px;
+      }
+
+      .stats-label {
+        color: #6b7280;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+      }
+
+      /* Table Card */
+      .table-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: none;
+      }
+
+      .table-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 25px 30px;
+        border: none;
+      }
+
+      .table-header h5 {
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .custom-table {
+        margin: 0;
+      }
+
+      .custom-table thead th {
+        background: var(--light-color);
+        color: var(--dark-color);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        border: none;
+        padding: 20px;
+      }
+
+      .custom-table tbody td {
+        padding: 20px;
+        border-color: var(--border-color);
+        vertical-align: middle;
+      }
+
+      .custom-table tbody tr:hover {
+        background-color: rgba(99, 102, 241, 0.05);
+      }
+
+      /* Category Badge */
+      .category-badge {
+        background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        color: var(--dark-color);
+        padding: 8px 15px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Progress Bar */
+      .custom-progress {
+        height: 8px;
+        border-radius: 10px;
+        background-color: #e5e7eb;
+        margin-top: 8px;
+      }
+
+      .custom-progress-bar {
+        border-radius: 10px;
+        transition: width 0.6s ease;
+      }
+
+      /* Status Badge */
+      .status-badge {
+        padding: 8px 15px;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .status-success {
+        background: linear-gradient(135deg, var(--success-color), #059669);
+      }
+      .status-warning {
+        background: linear-gradient(135deg, var(--warning-color), #d97706);
+      }
+      .status-danger {
+        background: linear-gradient(135deg, var(--danger-color), #dc2626);
+      }
+
+      /* Action Buttons */
+      .action-btn {
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        color: white;
+        transition: all 0.3s ease;
+        margin: 0 2px;
+      }
+
+      .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-edit {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      }
+      .btn-delete {
+        background: linear-gradient(135deg, var(--danger-color), #dc2626);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 992px) {
+        .sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease;
+        }
+
+        .sidebar.show {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 100%;
+          margin: 0;
+          height: 100vh;
+          border-radius: 0;
+        }
+
+        .main-content {
+          padding: 10px;
+        }
+
+        .stats-card {
+          padding: 20px;
+          margin-bottom: 15px;
+        }
+
+        .page-header {
+          padding: 20px;
+        }
+
+        .custom-table {
+          font-size: 0.875rem;
+        }
+
+        .custom-table thead th,
+        .custom-table tbody td {
+          padding: 12px 8px;
+        }
+      }
+
+      /* Loading Animation */
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar d-lg-block d-none">
+      <div class="sidebar-header">
+        <h4><i class="fas fa-wallet"></i> Budget Manager</h4>
+        <p>Gestion financière intelligente</p>
+      </div>
+      <nav class="sidebar-nav">
+        <ul class="nav nav-pills flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/dashboard">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/budgets">
+              <i class="fas fa-chart-pie"></i>
+              Budgets
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/transactions">
+              <i class="fas fa-exchange-alt"></i>
+              Transactions
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/reports">
+              <i class="fas fa-chart-bar"></i>
+              Rapports
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/settings">
+              <i class="fas fa-cog"></i>
+              Paramètres
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Mobile Navigation Toggle -->
+    <button
+      class="btn btn-primary d-lg-none position-fixed"
+      style="top: 20px; left: 20px; z-index: 1001"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#mobileSidebar"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Sidebar -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">
+          <i class="fas fa-wallet"></i> Budget Manager
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <nav>
+          <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/budgets">
+                <i class="fas fa-chart-pie"></i> Budgets
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/transactions">
+                <i class="fas fa-exchange-alt"></i> Transactions
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/reports">
+                <i class="fas fa-chart-bar"></i> Rapports
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/settings">
+                <i class="fas fa-cog"></i> Paramètres
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="page-title">
+            <i class="fas fa-chart-pie"></i>
+            Dashboard des Budgets
+          </h1>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary">
+              <i class="fas fa-download"></i>
+              Exporter
+            </button>
+            <button 
+              class="btn btn-primary" 
+              data-bs-toggle="modal" 
+              data-bs-target="#createBudgetModal"
+            >
+              <i class="fas fa-plus"></i>
+              Nouveau Budget
+            </button>
+          </div>
+        </div>
+        <p class="text-muted mt-2 mb-0">
+          Gérez et surveillez tous vos budgets en temps réel
+        </p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="stats-card">
+            <div class="stats-icon primary">
+              <i class="fas fa-list-ul"></i>
+            </div>
+            <div class="stats-value"><%= budgets.length %></div>
+            <div class="stats-label">Total Budgets</div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="stats-card">
+            <div class="stats-icon success">
+              <i class="fas fa-euro-sign"></i>
+            </div>
+            <div class="stats-value">
+              <%= budgets.reduce((total, budget) => total +
+              parseFloat(budget.limitAmount), 0).toFixed(0) %>€
+            </div>
+            <div class="stats-label">Budget Total</div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="stats-card">
+            <div class="stats-icon warning">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="stats-value">0€</div>
+            <div class="stats-label">Dépenses</div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="stats-card">
+            <div class="stats-icon danger">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stats-value">0</div>
+            <div class="stats-label">Alertes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budgets Table -->
+      <div class="table-card">
+        <div class="table-header">
+          <h5>
+            <i class="fas fa-table"></i>
+            Liste des Budgets
+          </h5>
+        </div>
+        <div class="table-responsive">
+          <table class="table custom-table">
+            <thead>
+              <tr>
+                <th><i class="fas fa-tag"></i> Catégorie</th>
+                <th><i class="fas fa-euro-sign"></i> Montant Limite</th>
+                <th><i class="fas fa-calendar-month"></i> Mois</th>
+                <th><i class="fas fa-calendar-year"></i> Année</th>
+                <th><i class="fas fa-shopping-cart"></i> Dépensé</th>
+                <th><i class="fas fa-chart-line"></i> Progression</th>
+                <th><i class="fas fa-tools"></i> Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% budgets.forEach(function(budget) { 
+              const spentAmount = budget.spentAmount || 0; 
+              const limitAmount = parseFloat(budget.limitAmount); 
+              const percentage = (spentAmount / limitAmount) * 100; 
+              let statusClass = 'status-success';
+              let statusText = 'Sain'; 
+              let statusIcon = 'fas fa-check-circle';
+              let progressClass = 'bg-success'; 
+              if (percentage >= 90) {
+                statusClass = 'status-danger'; 
+                statusText = 'Critique'; 
+                statusIcon = 'fas fa-exclamation-triangle'; 
+                progressClass = 'bg-danger'; 
+              } else if (percentage >= 70) { 
+                statusClass = 'status-warning';
+                statusText = 'Attention'; 
+                statusIcon = 'fas fa-exclamation-circle'; 
+                progressClass = 'bg-warning'; 
+              } %>
+              <tr>
+                <td>
+                  <div class="category-badge">
+                    <i class="fas fa-folder"></i>
+                    <%= budget.category %>
+                  </div>
+                </td>
+                <td>
+                  <strong><%= budget.limitAmount %>€</strong>
+                </td>
+                <td>
+                  <span class="badge bg-primary text-white">
+                    <%= budget.month %>
+                  </span>
+                </td>
+                <td>
+                  <span class="badge bg-secondary text-white">
+                    <%= budget.year %>
+                  </span>
+                </td>
+                <td>
+                  <span class="text-muted"><%= spentAmount.toFixed(2) %>€</span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <small class="text-muted me-2"
+                      ><%= percentage.toFixed(1) %>%</small
+                    >
+                    <div class="custom-progress flex-grow-1">
+                      <div
+                        class="custom-progress-bar <%= progressClass %>"
+                        style="width: <%= Math.min(percentage, 100) %>%"
+                      ></div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex gap-1">
+                    <button 
+                      class="action-btn btn-edit" 
+                      title="Modifier" 
+                      data-id="<%= budget.id %>" 
+                    >
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button 
+                      class="action-btn btn-delete" 
+                      title="Supprimer" 
+                      data-id="<%= budget.id %>" 
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                    <button
+                      class="action-btn"
+                      style="background: linear-gradient(135deg, #10b981, #059669);"
+                      title="Détails"
+                      data-id="<%= budget.id %>"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="stats-card text-center">
+            <div class="stats-icon primary mx-auto">
+              <i class="fas fa-plus"></i>
+            </div>
+            <h6 class="mt-3">Créer un Budget</h6>
+            <p class="text-muted small">
+              Définissez un nouveau budget pour une catégorie
+            </p>
+            <button class="btn btn-primary btn-sm">
+              <i class="fas fa-plus"></i> Nouveau
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stats-card text-center">
+            <div class="stats-icon success mx-auto">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <h6 class="mt-3">Voir les Rapports</h6>
+            <p class="text-muted small">Analysez vos dépenses et tendances</p>
+            <button class="btn btn-success btn-sm">
+              <i class="fas fa-chart-bar"></i> Rapports
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stats-card text-center">
+            <div class="stats-icon warning mx-auto">
+              <i class="fas fa-cog"></i>
+            </div>
+            <h6 class="mt-3">Paramètres</h6>
+            <p class="text-muted small">
+              Configurez vos préférences et alertes
+            </p>
+            <button class="btn btn-warning btn-sm">
+              <i class="fas fa-cog"></i> Réglages
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+      // Sidebar toggle for mobile
+      document.addEventListener("DOMContentLoaded", function () {
+        // Auto-close mobile sidebar on link click
+        const sidebarLinks = document.querySelectorAll(
+          "#mobileSidebar .nav-link"
+        );
+        sidebarLinks.forEach((link) => {
+          link.addEventListener("click", function () {
+            const offcanvas = bootstrap.Offcanvas.getInstance(
+              document.getElementById("mobileSidebar")
+            );
+            if (offcanvas) {
+              offcanvas.hide();
+            }
+          });
+        });
+
+        // Add loading animation to buttons
+        const actionButtons = document.querySelectorAll(".action-btn");
+        actionButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const icon = this.querySelector("i");
+            const originalClass = icon.className;
+            icon.className = "loading";
+
+            setTimeout(() => {
+              icon.className = originalClass;
+            }, 1000);
+          });
+        });
+      });
+
+      // Smooth scrolling for better UX
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+      
+      // Fonction pour récupérer et mettre à jour les budgets
+      function updateBudgetsList() {
+        // Afficher un indicateur de chargement
+        const tableBody = document.querySelector('.custom-table tbody');
+        if (tableBody) {
+          tableBody.innerHTML = '<tr><td colspan="7" class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement...</span></div></td></tr>';
+        }
+        
+        // Récupérer les budgets via AJAX
+        fetch('/budgets?format=json', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+          credentials: 'same-origin'
+        })
+        .then(response => {
+          // Vérifier le type de contenu
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.indexOf("application/json") !== -1) {
+            return response.json();
+          } else {
+            throw new Error("Le serveur n'a pas retourné de JSON");
+          }
+        })
+        .then(data => {
+          if (data.success && Array.isArray(data.budgets)) {
+            // Mettre à jour les statistiques
+            updateDashboardStats();
+            
+            // Mettre à jour le tableau des budgets
+            if (tableBody) {
+              tableBody.innerHTML = '';
+              
+              // Ajouter chaque budget au tableau
+              data.budgets.forEach(budget => {
+                const spentAmount = budget.spentAmount || 0;
+                const limitAmount = parseFloat(budget.limitAmount);
+                const percentage = (spentAmount / limitAmount) * 100;
+                let statusClass = 'status-success';
+                let statusText = 'Sain';
+                let statusIcon = 'fas fa-check-circle';
+                let progressClass = 'bg-success';
+                
+                if (percentage >= 90) {
+                  statusClass = 'status-danger';
+                  statusText = 'Critique';
+                  statusIcon = 'fas fa-exclamation-triangle';
+                  progressClass = 'bg-danger';
+                } else if (percentage >= 70) {
+                  statusClass = 'status-warning';
+                  statusText = 'Attention';
+                  statusIcon = 'fas fa-exclamation-circle';
+                  progressClass = 'bg-warning';
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                  <td>
+                    <div class="category-badge">
+                      <i class="fas fa-folder"></i>
+                      ${budget.category}
+                    </div>
+                  </td>
+                  <td>
+                    <strong>${budget.limitAmount}€</strong>
+                  </td>
+                  <td>
+                    <span class="badge bg-primary text-white">
+                      ${budget.month}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge bg-secondary text-white">
+                      ${budget.year}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="text-muted">${spentAmount.toFixed(2)}€</span>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <small class="text-muted me-2">${percentage.toFixed(1)}%</small>
+                      <div class="custom-progress flex-grow-1">
+                        <div class="custom-progress-bar ${progressClass}" style="width: ${Math.min(percentage, 100)}%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="action-btn btn-edit" title="Modifier" data-id="${budget.id}">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="action-btn btn-delete" title="Supprimer" data-id="${budget.id}">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      <button class="action-btn" style="background: linear-gradient(135deg, #10b981, #059669);" title="Détails" data-id="${budget.id}">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </td>
+                `;
+                
+                tableBody.appendChild(row);
+              });
+              
+              // Réattacher les événements aux boutons d'action
+              attachActionButtonEvents();
+            }
+          } else {
+            console.error("Erreur lors de la récupération des budgets:", data.message || "Erreur inconnue");
+            if (tableBody) {
+              tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Une erreur est survenue lors de la récupération des budgets</td></tr>';
+            }
+          }
+        })
+        .catch(error => {
+          console.error("Erreur:", error);
+          if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Une erreur est survenue lors de la récupération des budgets</td></tr>';
+          }
+        });
+      }
+      
+      // Fonction pour mettre à jour les statistiques du dashboard
+      function updateDashboardStats() {
+        fetch('/budgets/dashboard/stats', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+          credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Mettre à jour le nombre total de budgets
+            const totalBudgetsElement = document.querySelector('.stats-card .stats-value:nth-of-type(1)');
+            if (totalBudgetsElement) {
+              totalBudgetsElement.textContent = data.totalBudgets || '0';
+            }
+            
+            // Mettre à jour le montant total du budget
+            const budgetTotalElement = document.querySelector('.stats-card:nth-child(2) .stats-value');
+            if (budgetTotalElement) {
+              budgetTotalElement.textContent = `${data.totalAmount || 0}€`;
+            }
+          }
+        })
+        .catch(error => {
+          console.error("Erreur lors de la mise à jour des statistiques:", error);
+        });
+      }
+      
+      // Fonction pour attacher les événements aux boutons d'action
+      function attachActionButtonEvents() {
+        // Attacher les événements aux boutons d'édition
+        document.querySelectorAll('.btn-edit').forEach(button => {
+          button.addEventListener('click', function(event) {
+            // Empêcher le comportement par défaut (qui pourrait être une navigation)
+            event.preventDefault();
+            const budgetId = this.getAttribute('data-id');
+            prepareBudgetEditModal(budgetId);
+          });
+        });
+        
+        // Attacher les événements aux boutons de suppression
+        document.querySelectorAll('.btn-delete').forEach(button => {
+          button.addEventListener('click', function(event) {
+            // Empêcher le comportement par défaut
+            event.preventDefault();
+            const budgetId = this.getAttribute('data-id');
+            prepareBudgetDeleteModal(budgetId);
+          });
+        });
+        
+        // Attacher les événements aux boutons de détail
+        document.querySelectorAll('.action-btn:not(.btn-edit):not(.btn-delete)').forEach(button => {
+          button.addEventListener('click', function(event) {
+            // Empêcher la navigation automatique
+            event.preventDefault();
+            const budgetId = this.getAttribute('data-id');
+            
+            // Pour l'instant, nous pouvons juste afficher un message
+            alert(`Détails du budget ID: ${budgetId} - Fonctionnalité à venir`);
+            // Quand la page de détails sera prête:
+            // window.location.href = `/budgets/${budgetId}/details`;
+          });
+        });
+      }
+      
+      // Fonction pour préparer le modal d'édition de budget
+      function prepareBudgetEditModal(budgetId) {
+        console.log('prepareBudgetEditModal appelé avec ID:', budgetId);
+        // Plutôt que de faire un fetch, cherchons d'abord dans les données du DOM
+        // Trouver le budget directement depuis les éléments affichés
+        const row = document.querySelector(`button.btn-edit[data-id="${budgetId}"]`).closest('tr');
+        
+        if (row) {
+          // Extraire les données du budget directement du DOM
+          const category = row.querySelector('.category-badge').textContent.trim();
+          const limitAmount = row.querySelector('td:nth-child(2) strong').textContent.replace('€', '').trim();
+          const monthText = row.querySelector('td:nth-child(3) .badge').textContent.trim();
+          const yearText = row.querySelector('td:nth-child(4) .badge').textContent.trim();
+          
+          console.log('Données extraites:', { category, limitAmount, monthText, yearText });
+          
+          // Remplir le formulaire d'édition avec les données extraites
+          const editForm = document.getElementById('editBudgetForm');
+          if (editForm) {
+            // Définir l'action du formulaire avec l'ID complet (sans paramètres de requête)
+            const formAction = `/budgets/${budgetId}`;
+            editForm.action = formAction;
+            console.log('Action du formulaire définie à:', formAction);
+            
+            // Remplir les champs
+            const categorySelect = document.getElementById('editCategory');
+            // Trouver l'option qui correspond à cette catégorie
+            for (let i = 0; i < categorySelect.options.length; i++) {
+              if (categorySelect.options[i].text.toLowerCase().includes(category.toLowerCase()) || 
+                  category.toLowerCase().includes(categorySelect.options[i].value)) {
+                categorySelect.selectedIndex = i;
+                break;
+              }
+            }
+            
+            document.getElementById('editLimitAmount').value = limitAmount;
+            
+            // Convertir le texte du mois en nombre de 1 à 12
+            // Dans le cas où le mois est déjà un nombre, le parseInt le gère correctement
+            const monthSelect = document.getElementById('editMonth');
+            const monthNumber = parseInt(monthText);
+            
+            if (!isNaN(monthNumber) && monthNumber >= 1 && monthNumber <= 12) {
+              monthSelect.value = monthNumber;
+            } else {
+              // Si ce n'est pas un nombre valide, essayez de faire correspondre le texte du mois
+              const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
+                                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+              const monthIndex = monthNames.findIndex(m => monthText.toLowerCase().includes(m.toLowerCase()));
+              if (monthIndex !== -1) {
+                monthSelect.value = monthIndex + 1; // Les mois commencent à 1
+              }
+            }
+            
+            // Année
+            document.getElementById('editYear').value = parseInt(yearText) || new Date().getFullYear();
+            
+            console.log('Formulaire rempli avec:', { 
+              category: categorySelect.value, 
+              limitAmount: document.getElementById('editLimitAmount').value,
+              month: monthSelect.value,
+              year: document.getElementById('editYear').value
+            });
+            
+            // Afficher le modal
+            const modal = new bootstrap.Modal(document.getElementById('editBudgetModal'));
+            modal.show();
+          }
+        } else {
+          console.error("Impossible de trouver les informations du budget dans le DOM");
+        }
+      }
+      
+      // Fonction pour préparer le modal de suppression de budget
+      function prepareBudgetDeleteModal(budgetId) {
+        // Extraire les données du budget directement du DOM comme pour le modal d'édition
+        const row = document.querySelector(`button.btn-delete[data-id="${budgetId}"]`).closest('tr');
+        
+        if (row) {
+          // Extraire les informations du budget
+          const category = row.querySelector('.category-badge').textContent.trim();
+          const month = row.querySelector('td:nth-child(3) .badge').textContent.trim();
+          const year = row.querySelector('td:nth-child(4) .badge').textContent.trim();
+          
+          // Mettre à jour le contenu du modal de suppression
+          document.getElementById('deleteBudgetName').textContent = category;
+          document.getElementById('deleteBudgetPeriod').textContent = `${month}/${year}`;
+          
+          // Définir l'action du formulaire
+          const deleteForm = document.getElementById('deleteBudgetForm');
+          if (deleteForm) {
+            deleteForm.action = `/budgets/${budgetId}`;
+          }
+          
+          // Afficher le modal
+          const modal = new bootstrap.Modal(document.getElementById('deleteBudgetModal'));
+          modal.show();
+        } else {
+          console.error("Impossible de trouver les informations du budget dans le DOM");
+        }
+      }
+      
+      // Gestion du modal de création de budget et initialisation des événements
+      document.addEventListener("DOMContentLoaded", function () {
+        // Attacher les événements aux boutons d'action existants
+        attachActionButtonEvents();
+        
+        // On utilise la soumission de formulaire standard au lieu de AJAX pour le formulaire d'édition
+        
+        // Gérer le formulaire de suppression
+        const deleteBudgetForm = document.getElementById('deleteBudgetForm');
+        if (deleteBudgetForm) {
+          deleteBudgetForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const budgetId = this.action.split('/').pop();
+            console.log('Soumission du formulaire de suppression pour le budget ID:', budgetId);
+            
+            // Envoyer la requête à l'API
+            fetch(`/budgets/${budgetId}`, {
+              method: 'DELETE',
+              headers: {
+                'Accept': 'application/json'
+              },
+              credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(result => {
+              if (result.success) {
+                // Fermer le modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteBudgetModal'));
+                modal.hide();
+                
+                // Afficher un message de succès
+                const alertContainer = document.createElement('div');
+                alertContainer.className = 'alert alert-success alert-dismissible fade show';
+                alertContainer.setAttribute('role', 'alert');
+                alertContainer.innerHTML = `
+                  <i class="fas fa-check-circle me-2"></i>
+                  Budget supprimé avec succès!
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                
+                document.querySelector('.page-header').insertAdjacentElement('afterend', alertContainer);
+                
+                // Disparition automatique après 5 secondes
+                setTimeout(() => {
+                  alertContainer.classList.remove('show');
+                  setTimeout(() => alertContainer.remove(), 300);
+                }, 5000);
+                
+                // Mettre à jour la liste des budgets sans recharger la page
+                updateBudgetsList();
+              } else {
+                // Afficher un message d'erreur
+                alert("Erreur: " + (result.message || "Une erreur est survenue"));
+              }
+            })
+            .catch(error => {
+              console.error("Erreur lors de la suppression du budget:", error);
+              alert("Une erreur est survenue lors de la suppression du budget");
+            });
+          });
+        }
+        
+        const createBudgetForm = document.getElementById("createBudgetForm");
+        
+        if (createBudgetForm) {
+          createBudgetForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            
+            // Récupérer les données du formulaire
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+              data[key] = value;
+            });
+            
+            // Envoyer la requête à l'API
+            fetch("/budgets", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+              },
+              body: JSON.stringify({
+                category: data.category,
+                limitAmount: parseFloat(data.limitAmount),
+                month: parseInt(data.month),
+                year: parseInt(data.year)
+              }),
+              credentials: "same-origin"
+            })
+            .then(response => {
+              // Vérifier le type de contenu
+              const contentType = response.headers.get("content-type");
+              if (contentType && contentType.indexOf("application/json") !== -1) {
+                return response.json();
+              } else {
+                console.error("Le serveur n'a pas retourné du JSON:", contentType);
+                throw new Error("Le serveur n'a pas retourné de JSON");
+              }
+            })
+            .then(result => {
+              if (result.success) {
+                // Fermer le modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById("createBudgetModal"));
+                modal.hide();
+                
+                // Réinitialiser le formulaire
+                createBudgetForm.reset();
+                
+                // Afficher un message de succès
+                const alertContainer = document.createElement('div');
+                alertContainer.className = 'alert alert-success alert-dismissible fade show';
+                alertContainer.setAttribute('role', 'alert');
+                alertContainer.innerHTML = `
+                  <i class="fas fa-check-circle me-2"></i>
+                  Budget créé avec succès!
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                
+                document.querySelector('.page-header').insertAdjacentElement('afterend', alertContainer);
+                
+                // Disparition automatique après 5 secondes
+                setTimeout(() => {
+                  alertContainer.classList.remove('show');
+                  setTimeout(() => alertContainer.remove(), 300);
+                }, 5000);
+                
+                // Mettre à jour la liste des budgets sans recharger la page
+                updateBudgetsList();
+              } else {
+                // Afficher un message d'erreur
+                alert("Erreur: " + (result.message || "Une erreur est survenue"));
+              }
+            })
+            .catch(error => {
+              console.error("Erreur:", error);
+              alert("Une erreur est survenue lors de la création du budget");
+            });
+          });
+        }
+      });
+    </script>
+    
+    <!-- Modal de création de budget -->
+    <div class="modal fade" id="createBudgetModal" tabindex="-1" aria-labelledby="createBudgetModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="createBudgetModalLabel">
+              <i class="fas fa-wallet me-2"></i>
+              Créer un nouveau budget
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="createBudgetForm" method="POST" action="/budgets">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="mb-3">
+                    <label for="category" class="form-label">
+                      <i class="fas fa-tag me-1"></i>
+                      Catégorie *
+                    </label>
+                    <select class="form-select" id="category" name="category" required>
+                      <option value="">Sélectionner une catégorie</option>
+                      <option value="alimentation">🍽️ Alimentation</option>
+                      <option value="transport">🚗 Transport</option>
+                      <option value="logement">🏠 Logement</option>
+                      <option value="loisirs">🎮 Loisirs</option>
+                      <option value="sante">🏥 Santé</option>
+                      <option value="education">📚 Éducation</option>
+                      <option value="vetements">👕 Vêtements</option>
+                      <option value="autres">📦 Autres</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="mb-3">
+                    <label for="limitAmount" class="form-label">
+                      <i class="fas fa-euro-sign me-1"></i>
+                      Montant limite *
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text">€</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="limitAmount"
+                        name="limitAmount"
+                        step="0.01"
+                        min="0.01"
+                        required
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="month" class="form-label">
+                      <i class="fas fa-calendar me-1"></i>
+                      Mois *
+                    </label>
+                    <select class="form-select" id="month" name="month" required>
+                      <option value="1">Janvier</option>
+                      <option value="2">Février</option>
+                      <option value="3">Mars</option>
+                      <option value="4">Avril</option>
+                      <option value="5">Mai</option>
+                      <option value="6">Juin</option>
+                      <option value="7">Juillet</option>
+                      <option value="8">Août</option>
+                      <option value="9">Septembre</option>
+                      <option value="10">Octobre</option>
+                      <option value="11">Novembre</option>
+                      <option value="12">Décembre</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="year" class="form-label">
+                      <i class="fas fa-calendar-alt me-1"></i>
+                      Année *
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="year"
+                      name="year"
+                      min="2020"
+                      max="2050"
+                      value="2025"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="fas fa-times me-1"></i>
+              Annuler
+            </button>
+            <button type="submit" form="createBudgetForm" class="btn btn-primary">
+              <i class="fas fa-save me-1"></i>
+              Créer le budget
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal d'édition de budget -->
+    <div class="modal fade" id="editBudgetModal" tabindex="-1" aria-labelledby="editBudgetModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="editBudgetModalLabel">
+              <i class="fas fa-edit me-2"></i>
+              Modifier le budget
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="editBudgetForm" method="POST" action="">
+              <!-- Le serveur Express standard ne prend pas en charge PUT nativement, donc on utilise POST avec _method -->
+              <input type="hidden" name="_method" value="PUT">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="mb-3">
+                    <label for="editCategory" class="form-label">
+                      <i class="fas fa-tag me-1"></i>
+                      Catégorie *
+                    </label>
+                    <select class="form-select" id="editCategory" name="category" required>
+                      <option value="alimentation">🍽️ Alimentation</option>
+                      <option value="transport">🚗 Transport</option>
+                      <option value="logement">🏠 Logement</option>
+                      <option value="loisirs">🎮 Loisirs</option>
+                      <option value="sante">🏥 Santé</option>
+                      <option value="education">📚 Éducation</option>
+                      <option value="vetements">👕 Vêtements</option>
+                      <option value="autres">📦 Autres</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="mb-3">
+                    <label for="editLimitAmount" class="form-label">
+                      <i class="fas fa-euro-sign me-1"></i>
+                      Montant limite *
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text">€</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="editLimitAmount"
+                        name="limitAmount"
+                        step="0.01"
+                        min="0.01"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="editMonth" class="form-label">
+                      <i class="fas fa-calendar me-1"></i>
+                      Mois *
+                    </label>
+                    <select class="form-select" id="editMonth" name="month" required>
+                      <option value="1">Janvier</option>
+                      <option value="2">Février</option>
+                      <option value="3">Mars</option>
+                      <option value="4">Avril</option>
+                      <option value="5">Mai</option>
+                      <option value="6">Juin</option>
+                      <option value="7">Juillet</option>
+                      <option value="8">Août</option>
+                      <option value="9">Septembre</option>
+                      <option value="10">Octobre</option>
+                      <option value="11">Novembre</option>
+                      <option value="12">Décembre</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="editYear" class="form-label">
+                      <i class="fas fa-calendar-alt me-1"></i>
+                      Année *
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="editYear"
+                      name="year"
+                      min="2020"
+                      max="2050"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="fas fa-times me-1"></i>
+              Annuler
+            </button>
+            <button type="submit" form="editBudgetForm" class="btn btn-primary">
+              <i class="fas fa-save me-1"></i>
+              Enregistrer les modifications
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal de suppression de budget -->
+    <div class="modal fade" id="deleteBudgetModal" tabindex="-1" aria-labelledby="deleteBudgetModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="deleteBudgetModalLabel">
+              <i class="fas fa-trash me-2"></i>
+              Confirmation de suppression
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>Êtes-vous sûr de vouloir supprimer le budget "<strong id="deleteBudgetName"></strong>" pour la période <strong id="deleteBudgetPeriod"></strong> ?</p>
+            <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Cette action est irréversible et supprimera également toutes les données associées à ce budget.</p>
+            <form id="deleteBudgetForm" method="POST" action="/budgets">
+              <input type="hidden" name="_method" value="DELETE">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="fas fa-times me-1"></i>
+              Annuler
+            </button>
+            <button type="submit" form="deleteBudgetForm" class="btn btn-danger">
+              <i class="fas fa-trash me-1"></i>
+              Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

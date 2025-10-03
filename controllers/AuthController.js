@@ -17,7 +17,7 @@ class AuthController {
         email,
         password,
         confirmPassword,
-        currency = "EUR",
+        currency = "EUR",  
       } = req.body;
 
       // Validation

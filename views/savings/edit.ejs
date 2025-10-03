@@ -1,0 +1,204 @@
+<%- include('../layouts/header', { title: 'Modifier l\'objectif d\'épargne' })
+%>
+
+<div class="container main-content">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card animate-fade-in shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-piggy-bank me-2"></i>
+            Modifier l'objectif d'épargne
+          </h5>
+        </div>
+
+        <div class="card-body">
+          <% if (locals.error && error.length > 0) { %>
+          <div class="alert alert-danger"><%= error %></div>
+          <% } %>
+
+          <form
+            action="/savings/<%= savingsGoal.id %>?_method=PUT"
+            method="POST"
+            id="savingsGoalForm"
+          >
+            <div class="mb-3">
+              <label for="title" class="form-label">Titre de l'objectif</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                required
+                placeholder="Ex: Vacances d'été, Nouvel ordinateur..."
+                minlength="2"
+                maxlength="200"
+                value="<%= savingsGoal.title %>"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="targetAmount" class="form-label"
+                >Montant cible (€)</label
+              >
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-euro-sign"></i
+                ></span>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="targetAmount"
+                  name="targetAmount"
+                  required
+                  step="0.01"
+                  min="0.01"
+                  placeholder="Montant à atteindre"
+                  value="<%= parseFloat(savingsGoal.targetAmount).toFixed(2) %>"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="currentAmount" class="form-label"
+                >Montant épargné (€)</label
+              >
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-euro-sign"></i
+                ></span>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="currentAmount"
+                  name="currentAmount"
+                  required
+                  step="0.01"
+                  min="0"
+                  placeholder="Montant déjà épargné"
+                  value="<%= parseFloat(savingsGoal.currentAmount).toFixed(2) %>"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="deadline" class="form-label">Date limite</label>
+              <input
+                type="date"
+                class="form-control"
+                id="deadline"
+                name="deadline"
+                required
+                value="<%= savingsGoal.deadline %>"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Progression</label>
+              <div class="progress" style="height: 20px">
+                <% const progress = (parseFloat(savingsGoal.currentAmount) /
+                parseFloat(savingsGoal.targetAmount)) * 100; const progressClass
+                = progress < 30 ? 'bg-danger' : progress < 70 ? 'bg-warning' :
+                'bg-success'; %>
+                <div
+                  class="progress-bar <%= progressClass %>"
+                  role="progressbar"
+                  style="width: <%= progress %>%"
+                  aria-valuenow="<%= progress %>"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <%= progress.toFixed(1) %>%
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>
+                Enregistrer les modifications
+              </button>
+              <a href="/savings" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Retour aux objectifs
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Validation du formulaire côté client
+    const form = document.getElementById("savingsGoalForm");
+    const targetAmountInput = document.getElementById("targetAmount");
+    const currentAmountInput = document.getElementById("currentAmount");
+    const progressBar = document.querySelector(".progress-bar");
+
+    // Mettre à jour la barre de progression lorsque les montants changent
+    function updateProgress() {
+      const targetAmount = parseFloat(targetAmountInput.value) || 0;
+      const currentAmount = parseFloat(currentAmountInput.value) || 0;
+      const progress =
+        targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
+      const formattedProgress = Math.min(100, Math.max(0, progress)).toFixed(1);
+
+      progressBar.style.width = `${formattedProgress}%`;
+      progressBar.textContent = `${formattedProgress}%`;
+
+      if (progress < 30) {
+        progressBar.className = "progress-bar bg-danger";
+      } else if (progress < 70) {
+        progressBar.className = "progress-bar bg-warning";
+      } else {
+        progressBar.className = "progress-bar bg-success";
+      }
+    }
+
+    targetAmountInput.addEventListener("input", updateProgress);
+    currentAmountInput.addEventListener("input", updateProgress);
+
+    // Validation lors de la soumission
+    form.addEventListener("submit", function (e) {
+      let isValid = true;
+      const title = document.getElementById("title").value.trim();
+      const targetAmount = parseFloat(targetAmountInput.value);
+      const currentAmount = parseFloat(currentAmountInput.value);
+      const deadline = document.getElementById("deadline").value;
+
+      if (title.length < 2 || title.length > 200) {
+        isValid = false;
+        alert("Le titre doit comporter entre 2 et 200 caractères");
+      }
+
+      if (isNaN(targetAmount) || targetAmount <= 0) {
+        isValid = false;
+        alert("Le montant cible doit être un nombre positif supérieur à 0");
+      }
+
+      if (isNaN(currentAmount) || currentAmount < 0) {
+        isValid = false;
+        alert("Le montant actuel doit être un nombre positif ou zéro");
+      }
+
+      if (currentAmount > targetAmount) {
+        isValid = false;
+        alert("Le montant épargné ne peut pas dépasser le montant cible");
+      }
+
+      if (!deadline) {
+        isValid = false;
+        alert("Veuillez choisir une date limite");
+      }
+
+      if (!isValid) {
+        e.preventDefault();
+      }
+    });
+  });
+</script>
+
+<%- include('../layouts/footer') %>
